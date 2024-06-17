@@ -1,18 +1,18 @@
 import 'package:crud_r/infraestructure/repositories/local_product_repository.dart';
-import 'package:crud_r/presentation/pages/user_page.dart';
+import 'package:crud_r/presentation/pages/admin/user_page.dart';
 import 'package:crud_r/presentation/providers/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/models/product_model.dart';
-import '../../domain/use_cases/get_all_product_usecase.dart';
-import '../../domain/use_cases/get_product_by_id_usecase.dart';
-import '../components/dialog_create_product.dart';
-import '../components/dialog_delete_product.dart';
-import '../components/dialog_update_product.dart';
-import '../components/product_card_page.dart';
-import '../providers/user_provider.dart';
+import '../../../domain/models/product_model.dart';
+import '../../../domain/use_cases/get_all_product_usecase.dart';
+import '../../../domain/use_cases/get_product_by_id_usecase.dart';
+import '../../components/dialog_create_product.dart';
+import '../../components/dialog_delete_product.dart';
+import '../../components/dialog_update_product.dart';
+import '../../components/product_card_page.dart';
+import '../../providers/user_provider.dart';
 
 
 class HomePage extends StatefulWidget {

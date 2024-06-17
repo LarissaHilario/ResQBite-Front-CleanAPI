@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_provider.dart';
-import 'home_page.dart';
+import 'admin/home_page.dart';
 
 
 class LoginPage extends StatefulWidget {
