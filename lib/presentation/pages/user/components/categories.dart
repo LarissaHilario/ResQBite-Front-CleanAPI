@@ -17,22 +17,22 @@ class _CategoriesComponentState extends State<CategoriesComponent> {
         mainAxisAlignment: MainAxisAlignment.center, // Align items in the center
         children: [
           CategoryItem(
-            label: 'Comida',
+            label: 'Comidsa',
             imagePath: 'assets/images/food.png',
           ),
-          SizedBox(width: 6), // Add space between categories
+          SizedBox(width: 20), // Add space between categories
           CategoryItem(
             label: 'Pastelería',
             imagePath: 'assets/images/cake.png',
           ),
-          SizedBox(width: 6),
+          SizedBox(width: 20),
           CategoryItem(
             label: 'Panadería',
             imagePath: 'assets/images/concha.png',
           ),
-          SizedBox(width: 6),
+          SizedBox(width: 20),
           CategoryItem(
-            label: 'Lácteos',
+            label: 'Lácsteos',
             imagePath: 'assets/images/leche.png',
           ),
         ],

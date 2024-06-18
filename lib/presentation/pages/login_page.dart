@@ -1,11 +1,12 @@
 
+import 'package:crud_r/presentation/pages/user/home_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_provider.dart';
-import 'admin/home_page.dart';
+
 
 
 class LoginPage extends StatefulWidget {
