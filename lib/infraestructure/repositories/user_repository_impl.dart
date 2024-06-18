@@ -24,4 +24,32 @@ class UserRepositoryImpl implements UserRepository {
       throw Exception('Failed to login');
     }
   }
+
+  @override
+  Future<UserModel> registerUser(String name, String lastName, String email, String password) async {
+      const url = 'http://3.223.7.73/signup';
+      final userData = {
+        'name': name,
+        'last_name': lastName,
+        'email': email,
+        'password': password,
+        //'cellphone': cellphone,
+      };
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(userData),
+      );
+
+      if (response.statusCode == 200) {
+        final token = jsonDecode(response.body);
+        return UserModel(token: token, email: email);
+      } else {
+        throw Exception('Failed to register user');
+      }
+    }
+
 }

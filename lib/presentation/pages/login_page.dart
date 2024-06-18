@@ -19,14 +19,15 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final ValueNotifier<bool> _passwordVisible = ValueNotifier<bool>(false);
   bool _isEmailInValid = false;
   bool _isPasswordInValid = false;
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese una contraseña";
-    } else if (value.length < 6) {
-      return "La contraseña debe tener al menos 6 caracteres";
+    } else if (value.length < 8) {
+      return "La contraseña debe tener al menos 8 caracteres";
     } else if (value.length > 15) {
       return "La contraseña no puede ser mayor a 15 caracteres";
     } else if (_isPasswordInValid) {
@@ -96,6 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                   child: IconButton(
                     icon: SvgPicture.asset('assets/images/arrow-left.svg'),
                     onPressed: () {
+
+                        Navigator.pop(context);
+
 
                     },
                   ),
@@ -186,6 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextFormField(
                           controller: _passwordController,
+                          obscureText: !_passwordVisible.value,
                           validator: (value) {
                             return validatePassword(value);
                           },
@@ -202,10 +207,15 @@ class _LoginPageState extends State<LoginPage> {
                               color: Color(0xFF000000),
                               fontWeight: FontWeight.w400,
                             ),
-                            suffixIcon: Image.asset(
-                              'assets/images/eye.png',
-                              width: 50,
-                              height: 50,
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                _passwordVisible.value = !_passwordVisible.value;
+                              },
+                              child: SvgPicture.asset(
+                                _passwordVisible.value
+                                    ? 'assets/images/eye.svg'
+                                    : 'assets/images/open.svg',
+                              ),
                             ),
                           ),
                         ),
