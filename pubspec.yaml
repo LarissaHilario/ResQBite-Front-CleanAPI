@@ -102,6 +102,7 @@ flutter:
     - assets/images/open-eye.png
     - assets/images/open.svg
     - assets/images/eye.svg
+    - assets/images/bag.svg
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.

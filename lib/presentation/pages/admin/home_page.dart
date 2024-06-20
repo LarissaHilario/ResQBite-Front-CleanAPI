@@ -16,6 +16,8 @@ import '../../providers/user_provider.dart';
 
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomeAdmiPageState();
 }
