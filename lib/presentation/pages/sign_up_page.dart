@@ -7,9 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../domain/repositories/user_repository.dart';
 
-
-
-
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
   @override
@@ -312,10 +309,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                               onTap: () {
                                                 _passwordVisible.value = !_passwordVisible.value;
                                               },
-                                              child: SvgPicture.asset(
+                                              child: Icon(
                                                 _passwordVisible.value
-                                                    ? 'assets/images/eye.svg'
-                                                    : 'assets/images/open.svg',
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off,
+                                                color: const Color(0xFF88B04F),
                                               ),
                                             ),
                                           ),

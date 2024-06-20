@@ -1,4 +1,5 @@
 
+import 'package:crud_r/presentation/components/tap_bar_widget.dart';
 import 'package:crud_r/presentation/pages/user/home_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => const TapBar()),
         );
       } catch (error) {
         setState(() {
@@ -248,14 +249,15 @@ class _LoginPageState extends State<LoginPage> {
                                                         _passwordVisible.value =
                                                         !_passwordVisible.value;
                                                       },
-                                                      child: SvgPicture.asset(
+                                                      child: Icon(
                                                         _passwordVisible.value
-                                                            ? 'assets/images/eye.svg'
-                                                            : 'assets/images/open.svg',
+                                                            ? Icons.visibility
+                                                          : Icons.visibility_off,
+                                                        color: const Color(0xFF88B04F),
+                                                      ),
                                                       ),
                                                     ),
-                                                  ),
-                                                );
+                                                  );
                                               })
                                         ],
                                       ),
