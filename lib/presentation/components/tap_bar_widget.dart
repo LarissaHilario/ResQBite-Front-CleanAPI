@@ -2,6 +2,7 @@ import 'package:crud_r/presentation/pages/admin/home_page.dart';
 import 'package:crud_r/presentation/pages/user/home_page.dart';
 import 'package:crud_r/presentation/pages/user/location_page.dart';
 import 'package:crud_r/presentation/pages/user/login_store.dart';
+import 'package:crud_r/presentation/pages/user/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -20,7 +21,7 @@ class _TapBarState extends State<TapBar> {
   Widget build(BuildContext context) {
 
     List<Widget> body = [
-      const HomePage(),
+      const SearchPage(),
       const HomeUserPage(),
       const LocationPage(),
 
