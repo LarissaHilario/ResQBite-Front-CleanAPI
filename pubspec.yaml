@@ -104,6 +104,10 @@ flutter:
     - assets/images/eye.svg
     - assets/images/bag.svg
     - assets/images/searchImg.png
+    - assets/images/photo_store.png
+    - assets/images/clock.svg
+    - assets/images/location_icon.svg
+    - assets/images/phone.svg
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.
