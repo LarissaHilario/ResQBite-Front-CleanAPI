@@ -21,7 +21,6 @@ class _CardOfferComponentState extends State<CardOfferComponent> {
       ),
       child: Stack(
         children: [
-          // Imagen
           Positioned(
             top: 0,
             left: 0,

@@ -1,4 +1,5 @@
 import 'package:crud_r/presentation/pages/admin/home_page.dart';
+import 'package:crud_r/presentation/pages/user/about_store_page.dart';
 import 'package:crud_r/presentation/pages/user/home_page.dart';
 import 'package:crud_r/presentation/pages/user/location_page.dart';
 import 'package:crud_r/presentation/pages/user/login_store.dart';
@@ -21,7 +22,7 @@ class _TapBarState extends State<TapBar> {
   Widget build(BuildContext context) {
 
     List<Widget> body = [
-      const SearchPage(),
+      const StoreUserPage(),
       const HomeUserPage(),
       const LocationPage(),
 
