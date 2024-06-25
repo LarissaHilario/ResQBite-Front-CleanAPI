@@ -1,14 +1,17 @@
-import 'package:crud_r/presentation/components/categories.dart';
-import 'package:crud_r/presentation/components/search_bar.dart';
-import 'package:crud_r/presentation/pages/user/components/dialog_offer.dart';
-import 'package:crud_r/presentation/pages/user/components/offer_card.dart';
-import 'package:crud_r/presentation/pages/user/components/dialog_location.dart';
-import 'package:crud_r/presentation/pages/user/components/store_card.dart';
-import 'package:crud_r/presentation/providers/Wait_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../../../domain/models/product_model.dart';
+import '../../../domain/use_cases/get_all_products_usecase.dart';
+import '../../components/categories.dart';
+import '../../components/search_bar.dart';
+import '../../providers/Wait_provider.dart';
+import '../../providers/user_provider.dart';
+import 'components/dialog_location.dart';
+import 'components/offer_card.dart';
+import 'components/store_card.dart';
 
 class HomeUserPage extends StatefulWidget {
   const HomeUserPage({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class HomeUserPage extends StatefulWidget {
 
 class _HomeUserPageState extends State<HomeUserPage> {
   late WaitProvider _waitController;
+  late Future<List<ProductModel>> _productsFuture;
 
   Future<void> _checkAndShowAlert() async {
     bool isLocationPermissionGranted = await _waitController.checkPermission();
@@ -35,12 +39,21 @@ class _HomeUserPageState extends State<HomeUserPage> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
     _waitController = WaitProvider(Permission.location);
     _checkAndShowAlert();
+    _productsFuture = _fetchProducts();
+  }
+
+  Future<List<ProductModel>> _fetchProducts() async {
+    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    if (token != null) {
+      final getAllProductsUseCase = Provider.of<GetAllProductsUseCase>(context, listen: false);
+      return await getAllProductsUseCase.execute(token);
+    }
+    return [];
   }
 
   @override
@@ -54,53 +67,48 @@ class _HomeUserPageState extends State<HomeUserPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, top: 50, right: 20),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'RESQBITE',
-                        style: TextStyle(
-                          fontSize: 26.0,
-                          color: Color(0xFF464646),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'FiraSansCondensed',
-                          letterSpacing: 5,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'RESQBITE',
+                      style: TextStyle(
+                        fontSize: 26.0,
+                        color: Color(0xFF464646),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'FiraSansCondensed',
+                        letterSpacing: 5,
+                      ),
+                    ),
+                    SizedBox(width: 50),
+                    InkWell(
+                      onTap: () {
+                        // Navegación deshabilitada para la demostración
+                      },
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: SvgPicture.asset(
+                          'assets/images/bag.svg',
+                          fit: BoxFit.fill,
                         ),
                       ),
-                      SizedBox(width: 50),
-                      InkWell(
-                        onTap: () {
-                          /*Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ProfileStorePage()),
-                          );*/
-                        },
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: SvgPicture.asset(
-                            'assets/images/bag.svg',
-                            fit: BoxFit.fill,
-                          ),
+                    ),
+                    SizedBox(width: 5),
+                    InkWell(
+                      onTap: () {
+                        // Navegación deshabilitada para la demostración
+                      },
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Image.asset(
+                          'assets/images/avatar.png',
+                          fit: BoxFit.fill,
                         ),
                       ),
-                      SizedBox(width: 5),
-                      InkWell(
-                        onTap: () {
-                          /*Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ProfileStorePage()),
-                          );*/
-                        },
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.asset(
-                            'assets/images/avatar.png',
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                    ]),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(
@@ -114,8 +122,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
               alignment: Alignment.topCenter,
               child: Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
-                child:
-                    Container(height: 100, child: const CategoriesComponent()),
+                child: Container(height: 100, child: const CategoriesComponent()),
               ),
             ),
             const SizedBox(
@@ -126,50 +133,62 @@ class _HomeUserPageState extends State<HomeUserPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: Container(
-                    height: 230,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: const Color(0xFF88B04F).withOpacity(.21),
-                    ),
-                    child: Column(
-                      children: [
-                        const Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 25, top: 10),
-                              child: Text(
-                                'OFERTAS',
-                                style: TextStyle(
-                                  fontSize: 25.0,
-                                  color: Color(0xFF464646),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'FiraSansCondensed',
-                                  letterSpacing: 3,
-                                ),
-                              ),
-                            )),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (BuildContext context, int index) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: CardOfferComponent(),
-                                );
-                              },
+                  height: 230,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: const Color(0xFF88B04F).withOpacity(.21),
+                  ),
+                  child: Column(
+                    children: [
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 25, top: 10),
+                          child: Text(
+                            'OFERTAS',
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              color: Color(0xFF464646),
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'FiraSansCondensed',
+                              letterSpacing: 3,
                             ),
                           ),
                         ),
-
-                      ],
-                    )),
+                      ),
+                      Expanded(
+                        child: FutureBuilder<List<ProductModel>>(
+                          future: _productsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Center(child: Text('No products available'));
+                            } else {
+                              final products = snapshot.data!.take(5).toList(); // Tomar solo los primeros 5 productos
+                              return ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: products.length,
+                                itemBuilder: (context, index) {
+                                  final product = products[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: CardOfferComponent(product: product),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             CardStoreComponent(),
-
           ],
         ),
       ),

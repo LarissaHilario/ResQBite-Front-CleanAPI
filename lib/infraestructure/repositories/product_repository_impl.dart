@@ -22,12 +22,12 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
       );
 
   @override
-  Future<List<ProductModel>> getAllProducts(String token) async {
+  Future<List<ProductModel>> getAllProductsByStore(String token) async {
     var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     if (connectivityService.status == ConnectivityStatus.connected) {
       print('tengo internet');
       await _localProductRepository.processPendingOperations(_apiProductRepository, token);
-      final products = await _apiProductRepository.getAllProducts(token);
+      final products = await _apiProductRepository.getAllProductsByStore(token);
       await _localProductRepository.saveProductsLocally(products);
       return products;
     } else {
@@ -134,6 +134,21 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
         'token': token,
       };
       await _localProductRepository.savePendingOperation(operation);
+    }
+  }
+
+  @override
+  Future<List<ProductModel>> getAllProducts(String token) async {
+    var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
+    if (connectivityService.status == ConnectivityStatus.connected) {
+      print('tengo internet');
+      final products = await _apiProductRepository.getAllProducts(token);
+      await _localProductRepository.saveProductsLocally(products);
+      return products;
+    } else {
+      print('No tengo internet');
+      final localProducts = await _localProductRepository.getAllProducts();
+      return localProducts;
     }
   }
 }

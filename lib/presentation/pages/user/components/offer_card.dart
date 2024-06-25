@@ -1,15 +1,21 @@
 import 'package:crud_r/presentation/pages/user/components/dialog_offer.dart';
 import 'package:flutter/material.dart';
 
-class CardOfferComponent extends StatefulWidget {
-  const CardOfferComponent({Key? key}) : super(key: key);
+import '../../../../domain/models/product_model.dart';
 
-  @override
-  State<CardOfferComponent> createState() => _CardOfferComponentState();
-}
+class CardOfferComponent extends StatelessWidget {
+  final ProductModel product;
+  final void Function()? onDelete;
+  final void Function()? onEdit;
 
-class _CardOfferComponentState extends State<CardOfferComponent> {
-  void OfferDialog(int productId) {
+  const CardOfferComponent({
+    Key? key,
+    required this.product,
+    this.onDelete,
+    this.onEdit,
+  }) : super(key: key);
+
+  void offerDialog(BuildContext context, int productId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -29,23 +35,25 @@ class _CardOfferComponentState extends State<CardOfferComponent> {
       ),
       child: Stack(
         children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/images/pancito.png',
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: Image(
+              image: product.imageProvider,
               width: 140,
+              height: 80,
               fit: BoxFit.cover,
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 35,
             left: 10,
             right: 0,
             child: Text(
-              'Cuernito 5',
-              style: TextStyle(
+              '${product.name} \$${product.price}',
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.white,
                 fontWeight: FontWeight.w400,
@@ -59,7 +67,7 @@ class _CardOfferComponentState extends State<CardOfferComponent> {
               padding: const EdgeInsets.only(right: 5),
               child: ElevatedButton(
                 onPressed: () {
-                  OfferDialog(1);
+                  offerDialog(context, product.id);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

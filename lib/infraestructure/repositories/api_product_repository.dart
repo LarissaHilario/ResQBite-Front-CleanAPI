@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class ApiProductRepository implements ProductRepository {
   @override
-  Future<List<ProductModel>> getAllProducts(String token) async {
+  Future<List<ProductModel>> getAllProductsByStore(String token) async {
     final response = await http.get(
       Uri.parse('http://3.223.7.73/get-saucers-by-store'),
       headers: {
@@ -137,6 +137,28 @@ class ApiProductRepository implements ProductRepository {
       }
     } else {
       throw Exception('Error al crear el producto: ${response.reasonPhrase}');
+    }
+  }
+
+  @override
+  Future<List<ProductModel>> getAllProducts(String token) async {
+    final response = await http.get(
+      Uri.parse('http://3.223.7.73/get_all'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final dynamic jsonResponse = json.decode(response.body);
+      if (jsonResponse.containsKey('saucers')) {
+        List<dynamic> saucersJson = jsonResponse['saucers'];
+        return saucersJson.map((saucer) => ProductModel.fromJson(saucer)).toList();
+      } else {
+        throw Exception('Response does not contain "saucers"');
+      }
+    } else {
+      throw Exception('Failed to load products');
     }
   }
 }

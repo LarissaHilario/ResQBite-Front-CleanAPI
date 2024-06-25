@@ -143,10 +143,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                             scrollDirection: Axis.horizontal,
                             itemCount: 4,
                             itemBuilder: (BuildContext context, int index) {
-                              return const Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: CardOfferComponent(),
-                              );
+
                             },
                           ),
                         ),
