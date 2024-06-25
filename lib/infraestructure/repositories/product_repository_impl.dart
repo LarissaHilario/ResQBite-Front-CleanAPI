@@ -39,13 +39,8 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
 
   @override
   Future<ProductModel> getProductById(int productId, String token) async {
-    var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      await _localProductRepository.processPendingOperations(_apiProductRepository, token);
-      return _apiProductRepository.getProductById(productId, token);
-    } else {
-      return _localProductRepository.getProductById(productId, token);
-    }
+    return _apiProductRepository.getProductById(productId, token);
+
   }
 
   @override

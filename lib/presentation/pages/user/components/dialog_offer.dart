@@ -29,9 +29,12 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
 
   Future<ProductModel> _fetchProductData() async {
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    if (token == null) {
+      throw Exception('Token is null');
+    }
     final getProductByIdUseCase =
-        Provider.of<GetProductByIdUseCase>(context, listen: false);
-    return await getProductByIdUseCase.execute(widget.productId, token!);
+    Provider.of<GetProductByIdUseCase>(context, listen: false);
+    return await getProductByIdUseCase.execute(widget.productId, token);
   }
 
   void closeAlert() {
@@ -41,15 +44,24 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        insetPadding: EdgeInsets.all(10),
-        content: SizedBox(
-            height: 430,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
+      insetPadding: EdgeInsets.all(10),
+      content: FutureBuilder<ProductModel>(
+        future: _productFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading product: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final product = snapshot.data!;
+            return SizedBox(
+              height: 430,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Padding(
                       padding: const EdgeInsets.only(left: 80, top: 5),
                       child: Row(
                         children: [
@@ -73,14 +85,12 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: const Color(0xFF88B04F)
-                                        .withOpacity(0.5),
+                                    color: const Color(0xFF88B04F).withOpacity(0.5),
                                     width: 1,
                                   ),
                                 ),
                                 child: IconButton(
-                                  icon: SvgPicture.asset(
-                                      'assets/images/close.svg'),
+                                  icon: SvgPicture.asset('assets/images/close.svg'),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
@@ -89,223 +99,174 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                             ),
                           ),
                         ],
-                      )),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  height: 160,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
+                      ),
+                    ),
                   ),
-                  child: Image.asset(
-                    'assets/images/cuerno.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF88B04F).withOpacity(0.7),
+                  const SizedBox(height: 10),
+                  ClipRRect(
                     borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)
+                    ),
+
+                    child:
+                    Container(
+                      width: double.infinity,
+                      child:
+                      Image(
+                        image: product.imageProvider,
+
+                        height: 160,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF88B04F).withOpacity(0.7),
+                      borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                  ),
-                  width: 500,
-                  height: 200,
-                  child: Column(
-                    children: [
-                      const Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 1),
-                            child: Text(
-                              'CUERNITO',
-                              style: TextStyle(
-                                fontSize: 25.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'FiraSansCondensed',
-                                letterSpacing: 5,
-                              ),
-                            ),
-                          )),
-                      Row(
-                        children: [
-                          Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: SvgPicture.asset(
-                                  'assets/images/ubication-store.svg',
-                                  width: 25,
-                                ),
-                              )),
-                          const Text(
-                            ' Pastelería Sofi',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'FiraSansCondensed',
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ],
+                        bottomRight: Radius.circular(10),
                       ),
-                      Row(
-                        children: [
-                          Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 10),
-                                child: const Text(
-                                  ' \$ 5 Pesos',
-                                  style: TextStyle(
-                                    fontSize: 19.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'FiraSansCondensed',
-                                    letterSpacing: 2,
-                                  ),
-                                ),
-                              )),
-                          const SizedBox(
-                            width: 20,
+                    ),
+                    width: double.infinity,
+                    height: 200,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        Text(
+                          product.name,
+                          style: const TextStyle(
+                            fontSize: 25.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'FiraSansCondensed',
+                            letterSpacing: 5,
                           ),
-                          Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 11),
-                                child: const Text(
-                                  'Disponible : 2',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'FiraSansCondensed',
-                                    letterSpacing: 1,
-                                  ),
-                                ),
-                              )),
-                        ],
-                      ),
-                      Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 10, left: 10),
-                            child: const Text(
-                              ' Rico cuernito relleno de chocolate',
-                              style: TextStyle(
-                                fontSize: 14.0,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          ' \$${product.price}',
+                          style: const TextStyle(
+                            fontSize: 19.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'FiraSansCondensed',
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Disponible: ${product.stock}',
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'FiraSansCondensed',
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          product.description,
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'FiraSansCondensed',
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 36,
+                              decoration: const BoxDecoration(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'FiraSansCondensed',
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    icon: SvgPicture.asset(
+                                      'assets/images/minus.svg',
+                                      height: 25,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                    child: Text(
+                                      '1',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    icon: SvgPicture.asset(
+                                      'assets/images/more.svg',
+                                      height: 25,
+                                    ),
+                                    onPressed: () {},
+                                  ),
+                                ],
                               ),
                             ),
-                          )),
-                      Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10, left: 10),
-                              child: Container(
-                                height: 36,
-
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                ),
-
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                        padding: EdgeInsets.zero,
-
-                                        icon: SvgPicture.asset(
-                                          'assets/images/minus.svg',
-                                          height: 25, // Ajusta el tamaño según tus necesidades
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                        child: Text(
-                                          '1',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        padding: EdgeInsets.zero,
-
-                                        icon: SvgPicture.asset(
-                                          'assets/images/more.svg',
-                                          height: 25, // Ajusta el tamaño según tus necesidades
-                                        ),
-                                        onPressed: () {},
-                                      ),
-                                    ],
+                            const SizedBox(width: 10),
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              width: 155,
+                              height: 36,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5),
+                                    child: SvgPicture.asset(
+                                      'assets/images/cesta.svg',
+                                      height: 22,
+                                    ),
                                   ),
-                                ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(EdgeInsets.all(5)),
+                                    ),
+                                    child: const Text(
+                                      'Añadir a la cesta',
+                                      style: TextStyle(
+                                        color: Color(0xFF88B04F),
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-
-
-                          Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 10),
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  width: 155,
-                                  height: 36,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 5),
-                                          child: SvgPicture.asset(
-
-                                            'assets/images/cesta.svg',
-                                            height: 22,
-                                          )),
-
-                                      TextButton(
-                                        onPressed: () {},
-                                        style: ButtonStyle(
-                                          padding: MaterialStateProperty.all(EdgeInsets.all(5)), // Establece el padding a cero
-                                         
-                                        ),
-                                        child: const Text(
-                                          'Añadir a la cesta',
-                                          style: TextStyle(
-                                            color: Color(0xFF88B04F),
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ))
-                        ],
-                      )
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )));
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: Text('Product not found'));
+          }
+        },
+      ),
+    );
   }
 }

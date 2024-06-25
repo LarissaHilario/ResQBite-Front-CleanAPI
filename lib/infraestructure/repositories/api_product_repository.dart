@@ -46,6 +46,7 @@ class ApiProductRepository implements ProductRepository {
 
   @override
   Future<void> deleteProduct(String token, int productId) async {
+
     final url = 'http://3.223.7.73/delete-saucer/$productId';
     final response = await http.delete(Uri.parse(url), headers: {
       'Authorization': 'Bearer $token',
