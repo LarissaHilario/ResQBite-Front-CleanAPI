@@ -1,5 +1,6 @@
 import 'package:crud_r/presentation/components/categories.dart';
 import 'package:crud_r/presentation/components/search_bar.dart';
+import 'package:crud_r/presentation/pages/user/components/dialog_offer.dart';
 import 'package:crud_r/presentation/pages/user/components/offer_card.dart';
 import 'package:crud_r/presentation/pages/user/components/dialog_location.dart';
 import 'package:crud_r/presentation/pages/user/components/store_card.dart';
@@ -33,6 +34,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
       });
     }
   }
+
 
   @override
   void initState() {

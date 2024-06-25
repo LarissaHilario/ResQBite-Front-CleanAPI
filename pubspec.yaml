@@ -108,6 +108,12 @@ flutter:
     - assets/images/clock.svg
     - assets/images/location_icon.svg
     - assets/images/phone.svg
+    - assets/images/cuerno.png
+    - assets/images/cesta.svg
+    - assets/images/close.svg
+    - assets/images/ubication-store.svg
+    - assets/images/minus.svg
+    - assets/images/more.svg
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.

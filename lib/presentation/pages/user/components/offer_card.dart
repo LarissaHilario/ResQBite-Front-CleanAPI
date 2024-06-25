@@ -1,14 +1,22 @@
+import 'package:crud_r/presentation/pages/user/components/dialog_offer.dart';
 import 'package:flutter/material.dart';
 
 class CardOfferComponent extends StatefulWidget {
   const CardOfferComponent({Key? key}) : super(key: key);
-
 
   @override
   State<CardOfferComponent> createState() => _CardOfferComponentState();
 }
 
 class _CardOfferComponentState extends State<CardOfferComponent> {
+  void OfferDialog(int productId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MyDialogOfferProduct(productId: productId);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +58,9 @@ class _CardOfferComponentState extends State<CardOfferComponent> {
             child: Padding(
               padding: const EdgeInsets.only(right: 5),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  OfferDialog(1);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
