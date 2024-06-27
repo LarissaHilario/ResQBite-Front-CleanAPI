@@ -1,54 +1,46 @@
 import 'dart:convert';
+import 'package:crud_r/domain/models/product_model.dart';
 import 'package:flutter/material.dart';
 
-class ProductModel {
+class StoreModel {
+  final String address;
   final int id;
-  final String name;
-  final int stock;
-  final double price;
   final String image;
-  final String description;
-  late ImageProvider imageProvider;
-  final String category;
+  final String location;
+  final String name;
+  final String phone;
 
-  ProductModel({
+
+
+  StoreModel({
+    required this.address,
     required this.id,
-    required this.name,
-    required this.stock,
-    required this.price,
     required this.image,
-    required this.description,
-    required this.category,
-  }) {
-    imageProvider = _getImageProvider();
-  }
+    required this.location,
+    required this.name,
+    required this.phone,
+
+  });
 
   Map<String, dynamic> toJson() => {
+    'address' : address,
     'id': id,
-    'name': name,
-    'description': description,
-    'price': price,
-    'stock': stock,
     'image': image,
-    'category': category,
+    'location': location,
+    'name': name,
+    'phone': phone,
 
   };
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
+  factory StoreModel.fromJson(Map<String, dynamic> json) {
+    return StoreModel(
+      address: json['address'],
       id: json['id'],
-      name: json['name'],
-      stock: json['stock'],
-      price: json['price'].toDouble(),
       image: json['image'],
-      description: json['description'],
-      category: json['category'],
+      location: json['location'],
+      name: json['name'],
+      phone: json['phone'],
 
     );
-  }
-
-  ImageProvider _getImageProvider() {
-    final bytes = base64Decode(image);
-    return MemoryImage(bytes);
   }
 }

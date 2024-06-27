@@ -14,7 +14,7 @@ import 'components/offer_card.dart';
 import 'components/store_card.dart';
 
 class HomeUserPage extends StatefulWidget {
-  const HomeUserPage({Key? key}) : super(key: key);
+  const HomeUserPage({super.key});
 
   @override
   State<HomeUserPage> createState() => _HomeUserPageState();
@@ -59,8 +59,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           children: [
             Align(
               alignment: Alignment.topLeft,
@@ -79,7 +78,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
                         letterSpacing: 5,
                       ),
                     ),
-                    SizedBox(width: 50),
+                    const SizedBox(width: 50),
                     InkWell(
                       onTap: () {
                         // Navegación deshabilitada para la demostración
@@ -93,7 +92,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     InkWell(
                       onTap: () {
                         // Navegación deshabilitada para la demostración
@@ -118,11 +117,11 @@ class _HomeUserPageState extends State<HomeUserPage> {
             const SizedBox(
               height: 5,
             ),
-            Align(
+            const Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: Container(height: 100, child: const CategoriesComponent()),
+                padding: EdgeInsets.only(left: 30, right: 30),
+                child: SizedBox(height: 100, child: CategoriesComponent()),
               ),
             ),
             const SizedBox(
@@ -161,13 +160,13 @@ class _HomeUserPageState extends State<HomeUserPage> {
                           future: _productsFuture,
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
                               return Center(child: Text('Error: ${snapshot.error}'));
                             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return Center(child: Text('No products available'));
+                              return const Center(child: Text('No products available'));
                             } else {
-                              final products = snapshot.data!.take(5).toList(); // Tomar solo los primeros 5 productos
+                              final products = snapshot.data!.take(5).toList();
                               return ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: products.length,
@@ -188,10 +187,11 @@ class _HomeUserPageState extends State<HomeUserPage> {
                 ),
               ),
             ),
-            CardStoreComponent(),
+            Expanded(child:  const CardStoreComponent(), )
+
           ],
         ),
-      ),
+
     );
   }
 }
