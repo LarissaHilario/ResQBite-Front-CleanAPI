@@ -44,7 +44,7 @@ class SearchCard extends StatelessWidget {
                       style: const TextStyle(
                           color: Color(0xFFFFFFFF),
                           fontWeight: FontWeight.w600,
-                          fontSize: 13),
+                          fontSize: 11),
                     ),
                     const SizedBox(
                       height: 5,

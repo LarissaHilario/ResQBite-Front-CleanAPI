@@ -1,19 +1,37 @@
+import 'package:crud_r/domain/models/product_model.dart';
 import 'package:crud_r/presentation/components/categories.dart';
 import 'package:crud_r/presentation/components/search_bar.dart';
 import 'package:crud_r/presentation/pages/user/components/card_search.dart';
+import 'package:crud_r/presentation/providers/product_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/user_provider.dart';
+
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  final String category;
+  const SearchPage({super.key, required this.category});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
+  late String category;
+
+  List<ProductModel> _filteredProducts = [];
+
+  @override
+  void initState() {
+    category = widget.category;
+    print('la categoria es $category');
+    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    Provider.of<ProductProvider>(context, listen: false).getAllProductsByCategory(token!, category);
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +52,7 @@ class _SearchPageState extends State<SearchPage> {
                     letterSpacing: 5,
                   ),
                 ),
-                SizedBox(width: 50),
+                const SizedBox(width: 50),
                 InkWell(
                   onTap: () {
                     /*Navigator.push(
@@ -51,7 +69,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
                     /*Navigator.push(
@@ -78,29 +96,36 @@ class _SearchPageState extends State<SearchPage> {
           const SizedBox(
             height: 5,
           ),
-          Align(
+          const Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child:
-              Container(height: 100, child: const CategoriesComponent()),
+              padding: EdgeInsets.only(left: 30, right: 30),
+              child: SizedBox(height: 100, child: CategoriesComponent()),
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 5,
-              itemBuilder: (BuildContext context, int index) {
-                return const Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: SearchCard(
-                    tienda: 'Pastelería sofía',
-                    producto: 'Paquete de 4 donas',
-                    stock: 5,
-                    price: 30.0,
-                  ),
+            child: Consumer<ProductProvider>(builder: (_, controller, __) {
+              if(controller.loading) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                _filteredProducts = controller.productsFiltered;
+                return ListView.builder(
+                  itemCount: _filteredProducts.length,
+                  itemBuilder: (_, index) {
+                    final product = _filteredProducts[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: SearchCard(
+                        tienda: product.name,
+                        producto: product.description,
+                        stock: product.stock,
+                        price: product.price,
+                      ),
+                    );
+                  },
                 );
-              },
-            ),
+              }
+            }),
           ),
         ],
       ),
