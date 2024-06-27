@@ -21,6 +21,8 @@ class _SearchPageState extends State<SearchPage> {
   late String category;
 
   List<ProductModel> _filteredProducts = [];
+  List<ProductModel> _productsByName = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -29,6 +31,15 @@ class _SearchPageState extends State<SearchPage> {
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     Provider.of<ProductProvider>(context, listen: false).getAllProductsByCategory(token!, category);
     super.initState();
+  }
+
+  void _filterProductByName(String query) {
+    setState(() {
+      _filteredProducts = _productsByName
+          .where((product) =>
+          product.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
   }
 
 
@@ -92,7 +103,10 @@ class _SearchPageState extends State<SearchPage> {
           const SizedBox(
             height: 10,
           ),
-          const SearchBarComponent(),
+          SearchBarComponent(
+            onChanged: _filterProductByName,
+            textController: _searchController,
+          ),
           const SizedBox(
             height: 5,
           ),
@@ -108,7 +122,8 @@ class _SearchPageState extends State<SearchPage> {
               if(controller.loading) {
                 return const Center(child: CircularProgressIndicator());
               } else {
-                _filteredProducts = controller.productsFiltered;
+                _productsByName = controller.productsFiltered;
+                _filteredProducts = _searchController.text.isEmpty ? _productsByName : _filteredProducts;
                 return ListView.builder(
                   itemCount: _filteredProducts.length,
                   itemBuilder: (_, index) {
