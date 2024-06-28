@@ -202,6 +202,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child: Column(
                                   children: [
                                     TextFormField(
+                                      autocorrect: false,
                                       controller: _emailController,
                                       validator: validateEmail,
                                       decoration: const InputDecoration(

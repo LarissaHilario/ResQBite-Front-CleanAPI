@@ -8,6 +8,7 @@ class StoreModel {
   final String image;
   final String location;
   final String name;
+  late ImageProvider imageProvider;
   final String phone;
 
 
@@ -20,7 +21,10 @@ class StoreModel {
     required this.name,
     required this.phone,
 
-  });
+  })
+  {
+    imageProvider = _getimageProvider();
+  }
 
   Map<String, dynamic> toJson() => {
     'address' : address,
@@ -40,7 +44,11 @@ class StoreModel {
       location: json['location'],
       name: json['name'],
       phone: json['phone'],
-
     );
+  }
+
+  ImageProvider _getimageProvider() {
+    final bytes = base64Decode(image);
+    return MemoryImage(bytes);
   }
 }

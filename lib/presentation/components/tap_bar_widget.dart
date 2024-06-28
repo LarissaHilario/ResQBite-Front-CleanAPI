@@ -24,7 +24,7 @@ class _TapBarState extends State<TapBar> {
     List<Widget> body = [
       const StoreUserPage(),
       const HomeUserPage(),
-      const SearchPage(category: 'COMIDA')
+      const LocationPage()
     ];
 
     return Scaffold(

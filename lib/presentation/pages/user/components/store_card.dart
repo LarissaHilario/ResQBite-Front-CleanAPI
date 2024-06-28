@@ -78,12 +78,11 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                                     top: 0,
                                     left: 0,
                                     right: 0,
-                                    child: Image.asset(
-                                      'assets/images/tienda-sofi.png',
-                                      width: 140,
-                                      height: 100,  // Agregado para asegurar que tenga altura
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: Image(
+                                image: store.imageProvider,
+                                width: 140,
+                                fit: BoxFit.cover,
+                              ),
                                   ),
                                   Positioned(
                                     bottom: 35,
