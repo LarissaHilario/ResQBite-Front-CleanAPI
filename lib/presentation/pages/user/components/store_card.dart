@@ -1,6 +1,8 @@
-import 'package:crud_r/presentation/providers/store/store_provider.dart';
+// Asegúrate de tener la ruta correcta
+import 'package:crud_r/presentation/pages/user/about_store_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/store/store_provider.dart';
 import '../../../providers/user_provider.dart';
 
 class CardStoreComponent extends StatefulWidget {
@@ -65,66 +67,85 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                           final store = stores[index];
                           return Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              width: 140,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: const Color(0xFF88B04F).withOpacity(.85),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Image(
-                                image: store.imageProvider,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => StoreUserPage(storeId: store.id),
+                                  ),
+                                );
+                              },
+                              child: Container(
                                 width: 140,
-                                fit: BoxFit.cover,
-                              ),
-                                  ),
-                                  Positioned(
-                                    bottom: 35,
-                                    left: 10,
-                                    right: 0,
-                                    child: Text(
-                                      store.name,  // Usar el nombre de la tienda desde el modelo
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                        letterSpacing: 2.5,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: const Color(0xFF88B04F).withOpacity(.85),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
                                       ),
+                                    child:
+                                    Image(
+                                        image: store.imageProvider,
+                                        width: 140,
+                                        height: 70,
+                                        fit: BoxFit.cover,
+
                                     ),
                                   ),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 5),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          // Lógica para el botón "Ver más"
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(50),
-                                          ),
-                                          minimumSize: const Size(8, 20),
-                                        ),
-                                        child: const Text(
-                                          'Ver más',
-                                          style: TextStyle(
-                                            fontSize: 13.0,
-                                            color: Color(0xFF88B04F),
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'FiraSansCondensed',
-                                          ),
+                                    Positioned(
+                                      bottom: 35,
+                                      left: 10,
+                                      right: 0,
+                                      child: Text(
+                                        store.name,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: 2.5,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => StoreUserPage(storeId: store.id),
+                                              ),
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(50),
+                                            ),
+                                            minimumSize: const Size(8, 20),
+                                          ),
+                                          child: const Text(
+                                            'Ver más',
+                                            style: TextStyle(
+                                              fontSize: 13.0,
+                                              color: Color(0xFF88B04F),
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'FiraSansCondensed',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

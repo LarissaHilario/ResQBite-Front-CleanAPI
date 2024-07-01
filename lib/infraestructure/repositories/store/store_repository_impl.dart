@@ -25,4 +25,23 @@ class StoreRepositoryImpl implements StoreRepository {
       throw Exception('Error con el servidor: $error');
     }
   }
+
+  @override
+  Future<StoreModel> getStoreById(String token, int storeId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://3.223.7.73/store/$storeId'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final dynamic jsonResponse = json.decode(response.body);
+        return StoreModel.fromJson(jsonResponse);
+      } else {
+        throw Exception('Failed to load store');
+      }
+    } catch (error) {
+      throw Exception('Error con el servidor: $error');
+    }
+  }
 }

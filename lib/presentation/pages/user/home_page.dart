@@ -9,6 +9,7 @@ import '../../components/categories.dart';
 import '../../components/search_bar.dart';
 import '../../providers/Wait_provider.dart';
 import '../../providers/user_provider.dart';
+import '../splash_page.dart';
 import 'components/dialog_location.dart';
 import 'components/offer_card.dart';
 import 'components/store_card.dart';
@@ -83,13 +84,19 @@ class _HomeUserPageState extends State<HomeUserPage> {
                       onTap: () {
                         // Navegación deshabilitada para la demostración
                       },
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: SvgPicture.asset(
-                          'assets/images/bag.svg',
-                          fit: BoxFit.fill,
-                        ),
+                      child: IconButton(
+                          icon: SvgPicture.asset('assets/images/log-out.svg'),
+                          onPressed: () async {
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const MyInitPage(),
+                                ),
+                              );
+
+                            }
+
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -187,6 +194,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
                 ),
               ),
             ),
+
             Expanded(child:  const CardStoreComponent(), )
 
           ],

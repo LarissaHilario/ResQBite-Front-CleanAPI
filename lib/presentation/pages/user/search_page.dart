@@ -135,6 +135,7 @@ class _SearchPageState extends State<SearchPage> {
                         producto: product.description,
                         stock: product.stock,
                         price: product.price,
+                        imageProvider: product.imageProvider,
                       ),
                     );
                   },
