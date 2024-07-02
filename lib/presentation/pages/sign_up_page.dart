@@ -1,4 +1,3 @@
-
 import 'package:crud_r/domain/models/user_model.dart';
 import 'package:crud_r/infraestructure/repositories/user_repository_impl.dart';
 import 'package:crud_r/presentation/pages/login_page.dart';
@@ -45,6 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return null;
     }
   }
+
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return "Por favor ingrese un correo electrónico";
@@ -79,20 +79,26 @@ class _RegisterPageState extends State<RegisterPage> {
       }
 
       try {
-        final UserModel user = await _userRepository.registerUser(
+        final bool registered = await _userRepository.registerUser(
           _usernameController.text,
           _lastnameController.text,
           _emailController.text,
           _passwordController.text,
-
         );
 
-        // Handle successful registration
-        navigateLoginScreen();
+        if (registered) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usuario registrado exitosamente')),
+          );
+          navigateLoginScreen();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error al registrar usuario')),
+          );
+        }
       } catch (e) {
-        // Handle registration failure
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al registrar usuario')),
+          SnackBar(content: Text('Error al registrar usuario: $e')),
         );
       }
     }
@@ -102,8 +108,9 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: LayoutBuilder(
+
+      body:
+      LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           return Stack(
             children: [
@@ -202,6 +209,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child: Column(
                                   children: [
                                     TextFormField(
+                                      autocorrect: false,
                                       controller: _emailController,
                                       validator: validateEmail,
                                       decoration: const InputDecoration(
@@ -223,6 +231,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                     ),
                                     TextFormField(
+                                      autocorrect: false,
                                       controller: _usernameController,
                                       decoration: const InputDecoration(
                                         border: UnderlineInputBorder(
@@ -243,6 +252,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                     ),
                                     TextFormField(
+                                      autocorrect: false,
                                       controller: _lastnameController,
                                       decoration: const InputDecoration(
                                         border: UnderlineInputBorder(
@@ -263,6 +273,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                     ),
                                     TextFormField(
+                                      autocorrect: false,
                                       controller: _cellphoneController,
                                       validator: validatePhoneNumber,
                                       decoration: const InputDecoration(
@@ -287,6 +298,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       valueListenable: _passwordVisible,
                                       builder: (context, value, child) {
                                         return TextFormField(
+                                          autocorrect: false,
                                           controller: _passwordController,
                                           obscureText: !_passwordVisible.value,
                                           validator: (value) {
@@ -324,6 +336,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       valueListenable: _confirmPasswordVisible,
                                       builder: (context, value, child) {
                                         return TextFormField(
+                                          autocorrect: false,
                                           controller: _confirmPasswordController,
                                           obscureText: !_confirmPasswordVisible.value,
                                           validator: (value) {

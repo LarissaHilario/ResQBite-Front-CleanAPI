@@ -53,15 +53,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _loginUser() async {
+    setState(() {
+      _isEmailInValid = false;
+      _isPasswordInValid = false;
+    });
+
     if (_formKey.currentState!.validate()) {
-      print('hola');
       try {
-        print('si entré');
         final email = _emailController.text;
         final password = _passwordController.text;
-        print('aqui voy');
-        await Provider.of<UserProvider>(context, listen: false).login(
-            email, password);
+        await Provider.of<UserProvider>(context, listen: false).login(email, password);
         Navigator.push(
           // ignore: use_build_context_synchronously
           context,
@@ -76,6 +77,13 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                       child: Column(
                                         children: [
                                           TextFormField(
+                                            autocorrect: false,
                                             controller: _emailController,
                                             validator: (value) {
                                               return validateEmail(value);
@@ -219,6 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                                               valueListenable: _passwordVisible,
                                               builder: (context, value, child) {
                                                 return TextFormField(
+                                                  autocorrect: false,
                                                   controller: _passwordController,
                                                   obscureText: !_passwordVisible
                                                       .value,

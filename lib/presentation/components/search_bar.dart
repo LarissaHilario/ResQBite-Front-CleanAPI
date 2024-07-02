@@ -6,14 +6,16 @@ class SearchBarComponent extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final Widget? leading;
+  final TextEditingController? textController;
 
   const SearchBarComponent({
-    Key? key,
+    super.key,
     this.padding,
     this.onTap,
     this.onChanged,
     this.leading,
-  }) : super(key: key);
+    this.textController
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class SearchBarComponent extends StatelessWidget {
         child: TextField(
           onTap: onTap,
           onChanged: onChanged,
+          controller: textController,
           style: TextStyle(
               color: Colors.black.withOpacity(.5),
               fontWeight: FontWeight.w300,

@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/product_model.dart';
-import '../../../domain/use_cases/get_all_product_usecase.dart';
+import '../../../domain/use_cases/get_all_product_byStore_usecase.dart';
 import '../../../domain/use_cases/get_product_by_id_usecase.dart';
 import '../../components/dialog_create_product.dart';
 import '../../components/dialog_delete_product.dart';
@@ -48,7 +48,7 @@ class _HomeAdmiPageState extends State<HomePage> {
       if (_connectivityStatus == ConnectivityStatus.Offline) {
         futureProducts = _localProductRepository.getAllProducts();
       } else {
-        final getAllProductsUseCase = Provider.of<GetAllProductsUseCase>(context, listen: false);
+        final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
         futureProducts = getAllProductsUseCase.execute(token!);
       }
     });

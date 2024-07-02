@@ -10,7 +10,7 @@ class LocationPage extends StatefulWidget {
 class _LocationState extends State<LocationPage> {
   @override
   Widget build(BuildContext context) {
-    return const Text('hola soy el location');
+    return const Text('hola seguimos trabajando, espera pronto la nueva actualización');
   }
 
 }

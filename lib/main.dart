@@ -2,8 +2,13 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crud_r/domain/use_cases/add_product_usecase.dart';
+import 'package:crud_r/domain/use_cases/get_all_products_usecase.dart';
+import 'package:crud_r/domain/use_cases/store/get_store_byid_usecase.dart';
+import 'package:crud_r/infraestructure/repositories/store/store_repository_impl.dart';
 import 'package:crud_r/presentation/pages/splash_page.dart';
 import 'package:crud_r/presentation/pages/user/search_page.dart';
+import 'package:crud_r/presentation/providers/product_provider.dart';
+import 'package:crud_r/presentation/providers/store/store_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:crud_r/presentation/pages/login_page.dart';
@@ -13,14 +18,14 @@ import 'package:crud_r/infraestructure/repositories/api_product_repository.dart'
 import 'package:crud_r/infraestructure/repositories/local_product_repository.dart';
 import 'package:crud_r/infraestructure/repositories/product_repository_impl.dart';
 import 'package:crud_r/domain/use_cases/delete_product_usecase.dart';
-import 'package:crud_r/domain/use_cases/get_all_product_usecase.dart';
+import 'package:crud_r/domain/use_cases/get_all_product_byStore_usecase.dart';
 import 'package:crud_r/domain/use_cases/get_product_by_id_usecase.dart';
 import 'package:crud_r/domain/use_cases/update_product_usecase.dart';
 
 class ProductSyncManager {
   final LocalProductRepository _localProductRepository = LocalProductRepository();
   final ApiProductRepository _apiProductRepository = ApiProductRepository();
-  final String token; // Debes manejar el token apropiadamente
+  final String token;
 
   ProductSyncManager(this.token) {
     _startPeriodicSync();
@@ -40,6 +45,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => StoreProvider()),
+        ChangeNotifierProvider(create: (_) =>  ProductProvider()),
         ChangeNotifierProvider(create: (_)=> ConnectivityService()),
         Provider(create: (_) => ApiProductRepository()),
         Provider(create: (_) => LocalProductRepository()),
@@ -47,10 +54,13 @@ void main() {
           create: (context) => ProductRepositoryImpl(
             ApiProductRepository(),
             LocalProductRepository(),
-            context, // Agrega el contexto aquí
+            context,
           ),
         ),
 
+        ProxyProvider<ProductRepositoryImpl, GetAllProductsByStoreUseCase>(
+          update: (_, productRepository, __) => GetAllProductsByStoreUseCase(productRepository),
+        ),
         ProxyProvider<ProductRepositoryImpl, GetAllProductsUseCase>(
           update: (_, productRepository, __) => GetAllProductsUseCase(productRepository),
         ),

@@ -22,10 +22,9 @@ class _TapBarState extends State<TapBar> {
   Widget build(BuildContext context) {
 
     List<Widget> body = [
-      const StoreUserPage(),
-      const HomeUserPage(),
-      const LocationPage(),
 
+      const HomeUserPage(),
+      const LocationPage()
     ];
 
     return Scaffold(
@@ -43,10 +42,9 @@ class _TapBarState extends State<TapBar> {
           });
         },
         items: [
-          BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/store.svg'), label: 'Tienda'),
+
           BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/home.svg'), label: 'Home'),
           BottomNavigationBarItem(icon: SvgPicture.asset('assets/images/location.svg'), label:'Ubicación'),
-
         ],
 
       ),
