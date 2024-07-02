@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
+import '../splash_page.dart';
 
 class SearchPage extends StatefulWidget {
   final String category;
@@ -71,13 +72,19 @@ class _SearchPageState extends State<SearchPage> {
                         MaterialPageRoute(builder: (context) => const ProfileStorePage()),
                       );*/
                   },
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: SvgPicture.asset(
-                      'assets/images/bag.svg',
-                      fit: BoxFit.fill,
-                    ),
+                  child: IconButton(
+                      icon: SvgPicture.asset('assets/images/log-out.svg'),
+                      onPressed: () async {
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MyInitPage(),
+                          ),
+                        );
+
+                      }
+
                   ),
                 ),
                 const SizedBox(width: 5),

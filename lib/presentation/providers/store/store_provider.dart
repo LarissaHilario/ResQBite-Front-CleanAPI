@@ -9,6 +9,9 @@ class StoreProvider extends ChangeNotifier {
   List<StoreModel> _stores = [];
   List<StoreModel> get stores => _stores;
 
+  late StoreModel _store;
+  StoreModel get store => _store;
+
   bool _loading = false;
   bool get loading => _loading;
 
@@ -21,6 +24,10 @@ class StoreProvider extends ChangeNotifier {
   }
 
   Future<StoreModel> getStoreById(String token, int storeId) async {
-    return await _storeRepository.getStoreById(token, storeId);
+    _loading = true;
+    _store = await _storeRepository.getStoreById(token, storeId);
+    _loading = false;
+    notifyListeners();
+    return _store;
   }
 }

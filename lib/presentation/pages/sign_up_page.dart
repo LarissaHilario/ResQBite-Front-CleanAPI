@@ -90,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Usuario registrado exitosamente')),
           );
-          navigateLoginScreen(); // Navegar a la pantalla de inicio de sesión
+          navigateLoginScreen();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Error al registrar usuario')),

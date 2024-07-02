@@ -82,7 +82,6 @@ class _HomeUserPageState extends State<HomeUserPage> {
                     const SizedBox(width: 50),
                     InkWell(
                       onTap: () {
-                        // Navegación deshabilitada para la demostración
                       },
                       child: IconButton(
                           icon: SvgPicture.asset('assets/images/log-out.svg'),

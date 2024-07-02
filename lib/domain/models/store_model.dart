@@ -10,8 +10,7 @@ class StoreModel {
   final String name;
   late ImageProvider imageProvider;
   final String phone;
-
-
+  late final List<ProductModel> saucers;
 
   StoreModel({
     required this.address,
@@ -20,20 +19,19 @@ class StoreModel {
     required this.location,
     required this.name,
     required this.phone,
-
-  })
-  {
-    imageProvider = _getimageProvider();
+    List<ProductModel>? saucers,
+  }) : saucers = saucers ?? [] {
+    imageProvider = _getImageProvider();
   }
 
   Map<String, dynamic> toJson() => {
-    'address' : address,
+    'address': address,
     'id': id,
     'image': image,
     'location': location,
     'name': name,
     'phone': phone,
-
+    'saucers': saucers.map((saucer) => saucer.toJson()).toList(),
   };
 
   factory StoreModel.fromJson(Map<String, dynamic> json) {
@@ -44,10 +42,13 @@ class StoreModel {
       location: json['location'],
       name: json['name'],
       phone: json['phone'],
+      saucers: (json['saucers'] as List<dynamic>?)
+          ?.map((saucerJson) => ProductModel.fromJson(saucerJson))
+          .toList() ?? [],
     );
   }
 
-  ImageProvider _getimageProvider() {
+  ImageProvider _getImageProvider() {
     final bytes = base64Decode(image);
     return MemoryImage(bytes);
   }
