@@ -101,7 +101,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
                     const SizedBox(width: 5),
                     InkWell(
                       onTap: () {
-                        // Navegación deshabilitada para la demostración
+
                       },
                       child: SizedBox(
                         width: 50,
@@ -119,6 +119,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
             const SizedBox(
               height: 10,
             ),
+
             const SearchBarComponent(),
             const SizedBox(
               height: 5,
@@ -194,7 +195,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
               ),
             ),
 
-            Expanded(child:  const CardStoreComponent(), )
+            const Expanded(child:  CardStoreComponent() )
 
           ],
         ),

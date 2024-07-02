@@ -47,7 +47,7 @@ class SearchCard extends StatelessWidget {
                     style: const TextStyle(
                       color: Color(0xFFFFFFFF),
                       fontWeight: FontWeight.w600,
-                      fontSize: 11,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(
@@ -57,7 +57,8 @@ class SearchCard extends StatelessWidget {
                     tienda,
                     style: const TextStyle(
                       color: Color(0xFFFFFFFF),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 13,
                     ),
                   ),
                   const SizedBox(
@@ -70,16 +71,18 @@ class SearchCard extends StatelessWidget {
                         style: const TextStyle(
                           color: Color(0xFFFFFFFF),
                           fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
                       ),
                       const SizedBox(
-                        width: 40,
+                        width: 30,
                       ),
                       Text(
                         '\$$price',
                         style: const TextStyle(
                           color: Color(0xFFFFFFFF),
                           fontWeight: FontWeight.w600,
+                          fontSize: 16,
                         ),
                       ),
                     ],

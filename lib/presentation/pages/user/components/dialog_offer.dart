@@ -51,7 +51,8 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading product: ${snapshot.error}'));
+            return Center(
+                child: Text('Error loading product: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final product = snapshot.data!;
             return SizedBox(
@@ -105,22 +106,16 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                   const SizedBox(height: 10),
                   ClipRRect(
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)
-                    ),
-
-                    child:
-                    Container(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: Container(
                       width: double.infinity,
-                      child:
-                      Image(
+                      child: Image(
                         image: product.imageProvider,
-
                         height: 160,
                         fit: BoxFit.cover,
                       ),
-                    )
-
+                    ),
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -134,51 +129,101 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                     height: 200,
                     child: Column(
                       children: [
-                        const SizedBox(height: 10),
-                        Text(
-                          product.name,
-                          style: const TextStyle(
-                            fontSize: 25.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'FiraSansCondensed',
-                            letterSpacing: 5,
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 1),
+                            child: Text(
+                              product.name,
+                              style: const TextStyle(
+                                fontSize: 25.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'FiraSansCondensed',
+                                letterSpacing: 5,
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          ' \$${product.price}',
-                          style: const TextStyle(
-                            fontSize: 19.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'FiraSansCondensed',
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Disponible: ${product.stock}',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'FiraSansCondensed',
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          product.description,
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'FiraSansCondensed',
-                          ),
-                        ),
-                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 5),
+                                child: SvgPicture.asset(
+                                  'assets/images/ubication-store.svg',
+                                  width: 35,
+                                ),
+                              ),
+                            ),
 
+                            Text(
+                              product.storeName ?? 'Cargando...',
+                              style: const TextStyle(
+                                fontSize: 19.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'FiraSansCondensed',
+                                letterSpacing: 5,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 10, left: 10),
+                                child: Text(
+                                  ' \$${product.price} pesos',
+                                  style: const TextStyle(
+                                    fontSize: 19.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'FiraSansCondensed',
+                                    letterSpacing: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 11),
+                                child: Text(
+                                  'Disponible :  ${product.stock}',
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'FiraSansCondensed',
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10, left: 11),
+                            child: Text(
+                              product.description,
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'FiraSansCondensed',
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -186,7 +231,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
               ),
             );
           } else {
-            return const Center(child: Text('Product not found'));
+            return const Center(child: Text('No product data available'));
           }
         },
       ),

@@ -10,6 +10,8 @@ class ProductModel {
   final String description;
   late ImageProvider imageProvider;
   final String category;
+  final int? storeId;
+  String? storeName;
 
   ProductModel({
     required this.id,
@@ -19,6 +21,8 @@ class ProductModel {
     required this.image,
     required this.description,
     required this.category,
+    this.storeId,
+    this.storeName,
   }) {
     imageProvider = _getImageProvider();
   }
@@ -31,6 +35,7 @@ class ProductModel {
     'stock': stock,
     'image': image,
     'category': category,
+    'store_id':storeId
 
   };
 
@@ -43,6 +48,7 @@ class ProductModel {
       image: json['image'],
       description: json['description'],
       category: json['category'],
+      storeId: json['store_id'] != null ? json['store_id'] as int : null,
 
     );
   }

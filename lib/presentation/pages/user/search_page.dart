@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
 import '../splash_page.dart';
-
 class SearchPage extends StatefulWidget {
   final String category;
   const SearchPage({super.key, required this.category});
@@ -27,22 +26,21 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState() {
-    category = widget.category;
-    print('la categoria es $category');
-    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
-    Provider.of<ProductProvider>(context, listen: false).getAllProductsByCategory(token!, category);
     super.initState();
+    category = widget.category;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+      Provider.of<ProductProvider>(context, listen: false).getAllProductsByCategory(token!, category);
+    });
   }
 
   void _filterProductByName(String query) {
     setState(() {
       _filteredProducts = _productsByName
-          .where((product) =>
-          product.name.toLowerCase().contains(query.toLowerCase()))
+          .where((product) => product.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,49 +51,33 @@ class _SearchPageState extends State<SearchPage> {
             alignment: Alignment.topLeft,
             child: Padding(
               padding: const EdgeInsets.only(left: 20, top: 50, right: 20),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Text(
-                  'RESQBITE',
-                  style: TextStyle(
-                    fontSize: 26.0,
-                    color: Color(0xFF464646),
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'FiraSansCondensed',
-                    letterSpacing: 5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'RESQBITE',
+                    style: TextStyle(
+                      fontSize: 26.0,
+                      color: Color(0xFF464646),
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'FiraSansCondensed',
+                      letterSpacing: 5,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 50),
-                InkWell(
-                  onTap: () {
-                    /*Navigator.push(
+                  const SizedBox(width: 50),
+                  IconButton(
+                    icon: SvgPicture.asset('assets/images/log-out.svg'),
+                    onPressed: () {
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const ProfileStorePage()),
-                      );*/
-                  },
-                  child: IconButton(
-                      icon: SvgPicture.asset('assets/images/log-out.svg'),
-                      onPressed: () async {
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyInitPage(),
-                          ),
-                        );
-
-                      }
-
+                        MaterialPageRoute(
+                          builder: (context) => const MyInitPage(),
+                        ),
+                      );
+                    },
                   ),
-                ),
-                const SizedBox(width: 5),
-                InkWell(
-                  onTap: () {
-                    /*Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ProfileStorePage()),
-                      );*/
-                  },
-                  child: SizedBox(
+                  const SizedBox(width: 5),
+                  SizedBox(
                     width: 50,
                     height: 50,
                     child: Image.asset(
@@ -103,20 +85,16 @@ class _SearchPageState extends State<SearchPage> {
                       fit: BoxFit.fill,
                     ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           SearchBarComponent(
             onChanged: _filterProductByName,
             textController: _searchController,
           ),
-          const SizedBox(
-            height: 5,
-          ),
+          const SizedBox(height: 5),
           const Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -125,30 +103,32 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           Expanded(
-            child: Consumer<ProductProvider>(builder: (_, controller, __) {
-              if(controller.loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                _productsByName = controller.productsFiltered;
-                _filteredProducts = _searchController.text.isEmpty ? _productsByName : _filteredProducts;
-                return ListView.builder(
-                  itemCount: _filteredProducts.length,
-                  itemBuilder: (_, index) {
-                    final product = _filteredProducts[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: SearchCard(
-                        tienda: product.name,
-                        producto: product.description,
-                        stock: product.stock,
-                        price: product.price,
-                        imageProvider: product.imageProvider,
-                      ),
-                    );
-                  },
-                );
-              }
-            }),
+            child: Consumer<ProductProvider>(
+              builder: (_, controller, __) {
+                if (controller.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  _productsByName = controller.productsFiltered;
+                  _filteredProducts = _searchController.text.isEmpty ? _productsByName : _filteredProducts;
+                  return ListView.builder(
+                    itemCount: _filteredProducts.length,
+                    itemBuilder: (_, index) {
+                      final product = _filteredProducts[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: SearchCard(
+                          tienda: product.storeName ?? 'Cargando...',
+                          producto: product.name,
+                          stock: product.stock,
+                          price: product.price,
+                          imageProvider: product.imageProvider,
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),
