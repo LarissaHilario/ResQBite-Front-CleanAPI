@@ -161,11 +161,11 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                             Text(
                               product.storeName ?? 'Cargando...',
                               style: const TextStyle(
-                                fontSize: 19.0,
+                                fontSize: 18.0,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: 'FiraSansCondensed',
-                                letterSpacing: 5,
+                                letterSpacing: 2,
                               ),
                             ),
                           ],
@@ -179,17 +179,17 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                                 child: Text(
                                   ' \$${product.price} pesos',
                                   style: const TextStyle(
-                                    fontSize: 19.0,
+                                    fontSize: 18.0,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: 'FiraSansCondensed',
-                                    letterSpacing: 2,
+                                    letterSpacing: 1,
                                   ),
                                 ),
                               ),
                             ),
                             const SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
                             Align(
                               alignment: Alignment.topCenter,
@@ -216,7 +216,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                             child: Text(
                               product.description,
                               style: const TextStyle(
-                                fontSize: 18.0,
+                                fontSize: 16.0,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400,
                                 fontFamily: 'FiraSansCondensed',

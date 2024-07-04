@@ -66,7 +66,7 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                         itemBuilder: (_, index) {
                           final store = stores[index];
                           return Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(2.0),
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -78,7 +78,7 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                               },
                               child: Container(
                                 width: 140,
-                                height: 150,
+                                height: 200,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   color: const Color(0xFF88B04F).withOpacity(.85),
@@ -93,14 +93,14 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                                     child:
                                     Image(
                                         image: store.imageProvider,
-                                        width: 140,
+                                        width: double.infinity,
                                         height: 70,
                                         fit: BoxFit.cover,
 
                                     ),
                                   ),
                                     Positioned(
-                                      bottom: 35,
+                                      bottom: 30,
                                       left: 10,
                                       right: 0,
                                       child: Text(
@@ -116,7 +116,7 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(right: 5),
+                                        padding: const EdgeInsets.only(right: 5, top: 2),
                                         child: ElevatedButton(
                                           onPressed: () {
                                             Navigator.push(

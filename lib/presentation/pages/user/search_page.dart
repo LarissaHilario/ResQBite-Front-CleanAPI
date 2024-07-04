@@ -122,6 +122,7 @@ class _SearchPageState extends State<SearchPage> {
                           stock: product.stock,
                           price: product.price,
                           imageProvider: product.imageProvider,
+                          id: product.id,
                         ),
                       );
                     },
