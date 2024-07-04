@@ -1,10 +1,8 @@
-
 import 'package:crud_r/presentation/pages/user/components/offer_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:crud_r/domain/models/store_model.dart';
-
 import 'package:crud_r/presentation/providers/store/store_provider.dart';
 import 'package:crud_r/presentation/providers/user_provider.dart';
 import 'components/card_search.dart';
@@ -95,7 +93,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                   color: Color(0xFF464646),
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'FiraSansCondensed',
-                                  letterSpacing: 2,
+                                  letterSpacing: 1,
                                 ),
                               ),
                             ],
@@ -188,7 +186,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                 padding: const EdgeInsets.only(left: 10),
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: 5,
+                                  itemCount: offerProducts.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     final product = offerProducts[index];
 
@@ -223,7 +221,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                     ),
                   ),
                   ListView.builder(
-                    itemCount: 10,
+                    itemCount: otherProducts.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
@@ -236,6 +234,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                           stock: product.stock,
                           price: product.price,
                           imageProvider: product.imageProvider,
+                          id: product.id,
                         ),
                       );
                     },
