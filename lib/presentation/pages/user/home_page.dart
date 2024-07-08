@@ -1,3 +1,4 @@
+import 'package:crud_r/presentation/pages/user/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -51,7 +52,8 @@ class _HomeUserPageState extends State<HomeUserPage> {
   Future<List<ProductModel>> _fetchProducts() async {
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     if (token != null) {
-      final getAllProductsUseCase = Provider.of<GetAllProductsUseCase>(context, listen: false);
+      final getAllProductsUseCase =
+          Provider.of<GetAllProductsUseCase>(context, listen: false);
       return await getAllProductsUseCase.execute(token);
     }
     return [];
@@ -59,6 +61,9 @@ class _HomeUserPageState extends State<HomeUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    final userEmail = userProvider.user?.email ?? '';
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -94,14 +99,28 @@ class _HomeUserPageState extends State<HomeUserPage> {
                         },
                       ),
                       const SizedBox(width: 5),
-                      SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: Image.asset(
-                          'assets/images/avatar.png',
-                          fit: BoxFit.fill,
+                      InkWell(
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Image.asset(
+                            'assets/images/avatar.png',
+                            fit: BoxFit.fill,
+                          ),
                         ),
-                      ),
+                        onTap: () {
+                          if (token != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                    token: token,
+                                    userEmail: userEmail,
+                                  ),
+                                ));
+                          }
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -149,14 +168,20 @@ class _HomeUserPageState extends State<HomeUserPage> {
                           child: FutureBuilder<List<ProductModel>>(
                             future: _productsFuture,
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator());
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
                               } else if (snapshot.hasError) {
-                                return Center(child: Text('Error: ${snapshot.error}'));
-                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return const Center(child: Text('No products available'));
+                                return Center(
+                                    child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData ||
+                                  snapshot.data!.isEmpty) {
+                                return const Center(
+                                    child: Text('No products available'));
                               } else {
-                                final products = snapshot.data!.take(5).toList();
+                                final products =
+                                    snapshot.data!.take(5).toList();
                                 return ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount: products.length,
@@ -164,7 +189,8 @@ class _HomeUserPageState extends State<HomeUserPage> {
                                     final product = products[index];
                                     return Padding(
                                       padding: const EdgeInsets.all(10.0),
-                                      child: CardOfferComponent(product: product),
+                                      child:
+                                          CardOfferComponent(product: product),
                                     );
                                   },
                                 );
