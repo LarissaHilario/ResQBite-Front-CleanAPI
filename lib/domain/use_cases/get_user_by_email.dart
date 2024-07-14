@@ -8,7 +8,7 @@ class GetUserByEmail{
 
   GetUserByEmail(this.userRepository);
 
-   Future<UserModel> execute(String token, String email) {
+  Future<UserModel> execute(String token, String email) {
     return userRepository.getUserByEmail(token, email);
 
   }
