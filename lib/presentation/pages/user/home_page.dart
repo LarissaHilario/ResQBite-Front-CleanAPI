@@ -126,7 +126,7 @@ class _HomeUserPageState extends State<HomeUserPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              const SearchBarComponent(),
+              const SearchBarComponent( hintText: 'Busca tu alimento preferido...',),
               const SizedBox(height: 5),
               const Align(
                 alignment: Alignment.topCenter,

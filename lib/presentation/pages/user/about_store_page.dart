@@ -189,7 +189,6 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                   itemCount: offerProducts.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     final product = offerProducts[index];
-
                                     return Padding(
                                       padding: const EdgeInsets.all(10.0),
                                       child: CardOfferComponent(product: product),

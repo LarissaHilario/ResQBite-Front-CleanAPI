@@ -91,6 +91,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           const SizedBox(height: 10),
           SearchBarComponent(
+            hintText: 'Busca tus productos favoritos ...',
             onChanged: _filterProductByName,
             textController: _searchController,
           ),
