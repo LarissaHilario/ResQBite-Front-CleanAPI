@@ -7,6 +7,7 @@ class SearchBarComponent extends StatelessWidget {
   final void Function(String)? onChanged;
   final Widget? leading;
   final TextEditingController? textController;
+  final String hintText;
 
   const SearchBarComponent({
     super.key,
@@ -14,7 +15,8 @@ class SearchBarComponent extends StatelessWidget {
     this.onTap,
     this.onChanged,
     this.leading,
-    this.textController
+    this.textController,
+    required this.hintText,
   });
 
   @override
@@ -44,13 +46,10 @@ class SearchBarComponent extends StatelessWidget {
               fontSize: 16
           ),
           decoration: InputDecoration(
-            hintText: 'Buscar tu categoría ...',
+            hintText: hintText,
             hintStyle:
             const TextStyle(color: Colors.grey),
             prefixIcon: leading,
-            suffixIcon: SvgPicture.asset(
-              'assets/images/arrow-right.svg',
-            ),
             contentPadding: const EdgeInsets.symmetric(
                 vertical: 10.0,
                 horizontal: 10.0),

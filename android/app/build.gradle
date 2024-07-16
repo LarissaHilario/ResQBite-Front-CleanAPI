@@ -42,10 +42,10 @@ android {
 
     defaultConfig {
         applicationId = "com.resqbite"
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = 2
-        versionName = "1.0.0" //ultimo cero corregir un bug, segundo nueva funcionalidad, el ultimo es agregar muchas funcionalidades
+        versionName = "1.0.0"
     }
     signingConfigs {
        release {

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:crud_r/domain/models/user_model.dart';
 import 'package:crud_r/domain/repositories/user_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 class UserRepositoryImpl implements UserRepository {
@@ -71,8 +72,27 @@ class UserRepositoryImpl implements UserRepository {
       }
     }
   }
-}
 
+  @override
+  Future<Map<String, dynamic>> getUserByEmail(String token, String email) async {
+    const url = 'http://3.223.7.73/get_by_email';
+    final response = await Dio().get(
+      url,
+      queryParameters: {'email': email},
+      options: Options(
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      final responseData = response.data;
+      return responseData['user'];
+    } else {
+      throw Exception('Failed to get user by email');
+    }
+  }
+}
 
 
 
