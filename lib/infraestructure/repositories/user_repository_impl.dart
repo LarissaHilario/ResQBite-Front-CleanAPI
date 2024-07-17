@@ -92,7 +92,33 @@ class UserRepositoryImpl implements UserRepository {
       throw Exception('Failed to get user by email');
     }
   }
-}
+
+  @override
+  updateUserLocation(String token, String location) async {
+
+      const url = 'http://3.223.7.73/update_user_location';
+
+      final body = jsonEncode({
+        'location': location,
+      });
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        print('Location updated successfully');
+      } else {
+        print('Failed to update location: ${response.statusCode}');
+        throw Exception('Failed to update location');
+      }
+    }
+  }
 
 
 

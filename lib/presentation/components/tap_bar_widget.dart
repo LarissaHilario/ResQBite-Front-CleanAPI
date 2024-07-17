@@ -24,7 +24,7 @@ class _TapBarState extends State<TapBar> {
     List<Widget> body = [
 
       const HomeUserPage(),
-      const LocationPage()
+       LocationPage()
     ];
 
     return Scaffold(
