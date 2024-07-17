@@ -5,4 +5,6 @@ abstract class UserRepository {
   registerUser(String name, String lastName, String email, String password);
   getUserByEmail(String token, String email);
   updateUserLocation (String token, String location);
+  Future<void> updateUserProfile(String token, String userId, Map<String, dynamic> updatedData);
+
 }
