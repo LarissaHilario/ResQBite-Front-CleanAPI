@@ -1,3 +1,4 @@
+import 'package:crud_r/presentation/pages/user/edit_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../infraestructure/repositories/user_repository_impl.dart';
@@ -69,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const MyInitPage(),
+                              builder: (context) => EditProfilePage(token: widget.token, userEmail: widget.userEmail),
                             ),
                           );
                         },

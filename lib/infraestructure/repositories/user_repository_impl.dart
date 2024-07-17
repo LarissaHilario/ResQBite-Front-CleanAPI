@@ -74,11 +74,13 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> getUserByEmail(String token, String email) async {
+  Future<Map<String, dynamic>> getUserByEmail(String token,
+      String email) async {
     const url = 'http://3.223.7.73/get_by_email';
     final response = await Dio().get(
       url,
       queryParameters: {'email': email},
+
       options: Options(
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
@@ -95,31 +97,54 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   updateUserLocation(String token, String location) async {
+    const url = 'http://3.223.7.73/update_user_location';
 
-      const url = 'http://3.223.7.73/update_user_location';
+    final body = jsonEncode({
+      'location': location,
+    });
 
-      final body = jsonEncode({
-        'location': location,
-      });
+    final response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: 'Bearer $token',
+      },
+      body: body,
+    );
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: <String, String>{
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-        },
-        body: body,
-      );
-
-      if (response.statusCode == 200) {
-        print('Location updated successfully');
-      } else {
-        print('Failed to update location: ${response.statusCode}');
-        throw Exception('Failed to update location');
-      }
+    if (response.statusCode == 200) {
+      print('Location updated successfully');
+    } else {
+      print('Failed to update location: ${response.statusCode}');
+      throw Exception('Failed to update location');
     }
   }
 
+  @override
+  Future<void> updateUserProfile(String token, String userId,
+      Map<String, dynamic> updatedData) async {
+    print(updatedData);
+    try {
 
+      final response = await Dio().put(
+        'http://3.223.7.73/user-update/$userId',
+        options: Options(
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token'
+          },
+        ),
+        data: updatedData,
+      );
 
+      print('Update response status code: ${response.statusCode}');
+      print('Update response data: ${response.data}');
 
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update user profile');
+      }
+    } catch (e) {
+      print('Error updating user profile: $e');
+      throw Exception('Failed to update user profile: $e');
+    }
+  }
+}
