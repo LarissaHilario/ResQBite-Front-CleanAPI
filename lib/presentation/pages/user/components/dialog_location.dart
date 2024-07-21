@@ -1,7 +1,13 @@
 import 'dart:async';
 import 'package:crud_r/presentation/providers/request_permission.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../domain/repositories/user_repository.dart';
+import '../../../../infraestructure/repositories/user_repository_impl.dart';
+import '../../../providers/user_provider.dart';
 
 
 class DialogLocation extends StatefulWidget {
@@ -14,22 +20,71 @@ class DialogLocation extends StatefulWidget {
 class _DialogLocationState extends State<DialogLocation> {
   final _controller = RequestPermission(Permission.locationWhenInUse);
   late StreamSubscription _subscription;
+  final UserRepository userRepository = UserRepositoryImpl();
 
   @override
   void initState() {
     super.initState();
     _subscription = _controller.onStatusChanged.listen((status){
       if (status == PermissionStatus.granted){
+        _updateLocation();
         return;
       }
     });
   }
+
 
   @override
   void dispose() {
     _subscription.cancel();
     _controller.dispose();
     super.dispose();
+  }
+  String _determineLocation(double latitude, double longitude) {
+    // Coordenadas aproximadas de Suchiapa
+    const double suchiapaLatMin = 16.660;
+    const double suchiapaLatMax = 16.674;
+    const double suchiapaLonMin = -93.106;
+    const double suchiapaLonMax = -93.094;
+
+    // Coordenadas aproximadas de Tuxtla Gutiérrez
+    const double tuxtlaLatMin = 16.740;
+    const double tuxtlaLatMax = 16.760;
+    const double tuxtlaLonMin = -93.126;
+    const double tuxtlaLonMax = -93.106;
+
+    if (latitude >= suchiapaLatMin && latitude <= suchiapaLatMax &&
+        longitude >= suchiapaLonMin && longitude <= suchiapaLonMax) {
+      return "SUCHIAPA";
+    } else if (latitude >= tuxtlaLatMin && latitude <= tuxtlaLatMax &&
+        longitude >= tuxtlaLonMin && longitude <= tuxtlaLonMax) {
+      return "TUXTLA";
+    } else {
+      return "UNKNOWN";
+    }
+  }
+
+
+  Future<void> _updateLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    final token = Provider
+        .of<UserProvider>(context, listen: false)
+        .user
+        ?.token;
+
+    if (token != null) {
+      String location = _determineLocation(
+          position.latitude, position.longitude);
+      try {
+        await userRepository.updateUserLocation(token, location);
+        print('Ubicación actualizada exitosamente en el servidor.');
+      } catch (e) {
+    print('Error al actualizar la ubicación: $e');
+    }
+    } else {
+      print('Token no encontrado.');
+    }
   }
 
   @override

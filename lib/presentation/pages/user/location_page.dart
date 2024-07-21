@@ -2,6 +2,11 @@ import 'package:crud_r/presentation/pages/user/components/ubications_widget.dart
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../../domain/repositories/user_repository.dart';
+import '../../../infraestructure/repositories/user_repository_impl.dart';
+import '../../providers/user_provider.dart';
 
 class LocationPage extends StatefulWidget {
   const LocationPage({super.key});
@@ -11,6 +16,7 @@ class LocationPage extends StatefulWidget {
 }
 
 class _LocationState extends State<LocationPage> {
+  final UserRepository userRepository = UserRepositoryImpl();
   final initialCameraPosition = const CameraPosition(target: LatLng(0, 0));
   LatLng? userLocation;
   GoogleMapController? mapController;
@@ -30,14 +36,33 @@ class _LocationState extends State<LocationPage> {
     );
   }
 
-  void _onLocationSelected(LatLng location) {
+  void _onLocationSelected(String location) async {
     Navigator.pop(context); // Cierra el BottomSheet
-    mapController?.animateCamera(CameraUpdate.newLatLngZoom(location, 14));
-    setState(() {
-      userLocation = location;
-    });
-  }
 
+    // Establecer las coordenadas correspondientes para el mapa
+    LatLng coordinates;
+    if (location == 'suchiapa') {
+      coordinates = const LatLng(16.629444, -93.091667);
+    } else {
+      coordinates = const LatLng(16.75973, -93.11308);
+    }
+
+    mapController?.animateCamera(CameraUpdate.newLatLngZoom(coordinates, 14));
+    setState(() {
+      userLocation = coordinates;
+    });
+    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    if (token != null) {
+      try {
+        await userRepository.updateUserLocation(token, location);
+        print('Ubicación actualizada exitosamente en el servidor.');
+      } catch (e) {
+        print('Error al actualizar la ubicación: $e');
+      }
+    } else {
+      print('Token no encontrado.');
+    }
+  }
   Future<LatLng?> getUserLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(

@@ -21,6 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String name = '';
   String lastName = '';
   String email = '';
+  String phone = '';
 
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
         name = userProfile['name'];
         lastName = userProfile['last_name'];
         email = userProfile['email'];
+        phone = userProfile['phone_number'];
       });
     } catch (e) {
       print('Error fetching user profile: $e');
@@ -175,6 +177,28 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 5),
                     Text(
                       email,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        color: Color(0xFF464646),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'FiraSansCondensed',
+                        letterSpacing: 3.5,
+                      ),
+                    ),
+                    const Divider(height: 10, thickness: 2, color: Color(0xFFA0A0A7)),
+                    const Text(
+                      'Número telefónico',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Color(0xFF464646),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'FiraSansCondensed',
+                        letterSpacing: 3.5,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      phone,
                       style: const TextStyle(
                         fontSize: 16.0,
                         color: Color(0xFF464646),

@@ -10,9 +10,9 @@ class MyDialogOfferProduct extends StatefulWidget {
   final int productId;
 
   const MyDialogOfferProduct({
-    Key? key,
+    super.key,
     required this.productId,
-  }) : super(key: key);
+  });
 
   @override
   _MyDialogOfferProductState createState() => _MyDialogOfferProductState();
@@ -44,7 +44,8 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      insetPadding: EdgeInsets.all(10),
+      insetPadding: EdgeInsets.all(8),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20),
       content: FutureBuilder<ProductModel>(
         future: _productFuture,
         builder: (context, snapshot) {
@@ -56,18 +57,18 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
           } else if (snapshot.hasData) {
             final product = snapshot.data!;
             return SizedBox(
-              height: 430,
+              height: 530,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 80, top: 5),
+                      padding: const EdgeInsets.only(left: 80, top: 8),
                       child: Row(
                         children: [
                           const Text(
-                            'OFERTA',
+                            'DETALLES',
                             style: TextStyle(
                               fontSize: 25.0,
                               color: Color(0xFF464646),
@@ -79,7 +80,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                           Align(
                             alignment: Alignment.topCenter,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 45),
+                              padding: const EdgeInsets.only(left: 50),
                               child: Container(
                                 width: 40,
                                 height: 40,
@@ -105,9 +106,9 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                   ),
                   const SizedBox(height: 10),
                   ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                       ),
                     child: Container(
                       width: double.infinity,
                       child: Image(
@@ -117,34 +118,45 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF88B04F).withOpacity(0.7),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10),
-                      ),
-                    ),
-                    width: double.infinity,
-                    height: 200,
-                    child: Column(
+                 Column(
                       children: [
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 1),
-                            child: Text(
-                              product.name,
-                              style: const TextStyle(
-                                fontSize: 25.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'FiraSansCondensed',
-                                letterSpacing: 5,
+                        Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Text(
+                                  product.name,
+                                  style: const TextStyle(
+                                    fontSize: 23.0,
+                                    color: Color(0xFF88B04F),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'FiraSansCondensed',
+                                    letterSpacing: 3,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 3),
+                                child: Text(
+                                  ' \$${product.price}',
+                                  style: const TextStyle(
+                                    fontSize: 24.0,
+                                    color: Color(0xFF88B04F),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'FiraSansCondensed',
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+
                         Row(
                           children: [
                             Align(
@@ -153,7 +165,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                                 padding: const EdgeInsets.only(left: 10, right: 5),
                                 child: SvgPicture.asset(
                                   'assets/images/ubication-store.svg',
-                                  width: 35,
+                                  width: 30,
                                 ),
                               ),
                             ),
@@ -161,35 +173,51 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                             Text(
                               product.storeName ?? 'Cargando...',
                               style: const TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                                color: Colors.black45,
+                                fontWeight: FontWeight.w400,
                                 fontFamily: 'FiraSansCondensed',
                                 letterSpacing: 2,
                               ),
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 10, left: 10),
-                                child: Text(
-                                  ' \$${product.price} pesos',
-                                  style: const TextStyle(
-                                    fontSize: 18.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'FiraSansCondensed',
-                                    letterSpacing: 1,
-                                  ),
-                                ),
+                        const Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 10, left: 10),
+                            child: Text(
+                              'Descripción',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'FiraSansCondensed',
+                                letterSpacing: 1,
                               ),
                             ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10, left: 11),
+                            child: Text(
+                              product.description,
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'FiraSansCondensed',
+                              ),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+
                             const SizedBox(
-                              width: 10,
+                              width: 20,
                             ),
                             Align(
                               alignment: Alignment.topCenter,
@@ -209,8 +237,9 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                             ),
                           ],
                         ),
+
                         Align(
-                          alignment: Alignment.topLeft,
+                          alignment: Alignment.center,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10, left: 11),
                             child: Text(
@@ -224,9 +253,102 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                             ),
                           ),
                         ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 11, left: 11),
+                            child: Text(
+                              'Fecha de vencimiento: ',
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'FiraSansCondensed',
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ),
+                        ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 36,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: SvgPicture.asset(
+                                  'assets/images/minus.svg',
+                                  height: 25,
+                                ),
+                                onPressed: () {},
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                child: Text(
+                                  '1',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: SvgPicture.asset(
+                                  'assets/images/more.svg',
+                                  height: 25,
+                                ),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          width: 155,
+                          height: 36,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: SvgPicture.asset(
+                                  'assets/images/cesta.svg',
+                                  height: 22,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(EdgeInsets.all(5)),
+                                ),
+                                child: const Text(
+                                  'Añadir a la cesta',
+                                  style: TextStyle(
+                                    color: Color(0xFF88B04F),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ]
+                    )
                       ],
                     ),
-                  ),
                 ],
               ),
             );

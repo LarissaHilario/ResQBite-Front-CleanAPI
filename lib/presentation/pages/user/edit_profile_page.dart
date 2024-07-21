@@ -7,7 +7,8 @@ class EditProfilePage extends StatefulWidget {
   final String token;
   final String userEmail;
 
-  const EditProfilePage({super.key, required this.token, required this.userEmail});
+  const EditProfilePage(
+      {super.key, required this.token, required this.userEmail});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -20,26 +21,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
-  String staticLocation = '';
-  String defaultPassword = '';
+  String staticAddress = '';
 
   @override
   void initState() {
     super.initState();
     fetchUserProfile();
   }
+
   Future<void> fetchUserProfile() async {
     try {
-      final userProfile = await userRepository.getUserByEmail(widget.token, widget.userEmail);
+      final userProfile =
+          await userRepository.getUserByEmail(widget.token, widget.userEmail);
+      final password = await userRepository.getPassword();
       setState(() {
         nameController.text = userProfile['name'];
         lastNameController.text = userProfile['last_name'];
         emailController.text = userProfile['email'];
-        staticLocation = userProfile['location'];
-        defaultPassword = userProfile['password'];
+        phoneController.text = userProfile['phone_number'];
+        staticAddress = userProfile['address'];
+        passwordController.text = password ?? '';
+
       });
-      passwordController.text = defaultPassword;
     } catch (e) {
       print('Error fetching user profile: $e');
     }
@@ -48,28 +53,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> saveUserProfile() async {
     try {
       final userProfile = await userRepository.getUserByEmail(widget.token, widget.userEmail);
-      final userId = userProfile['id'].toString(); // Asegúrate de que userId es una cadena
-      await userRepository.updateUserProfile(widget.token, userId, {
+      await userRepository.updateUserProfile(widget.token, {
         'name': nameController.text,
         'last_name': lastNameController.text,
-        'email': emailController.text,
         'password': passwordController.text,
-        'location': staticLocation, // Usar la ubicación estática
+        'address': staticAddress,
+        'phone_number': phoneController.text,
       });
-
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Perfil actualizado con éxito')),
       );
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(token: widget.token, userEmail: widget.userEmail),
-                ),
-
-
-
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ProfilePage(token: widget.token, userEmail: widget.userEmail),
+        ),
       );
     } catch (e) {
       print('Error updating user profile: $e');
@@ -100,7 +101,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         fit: BoxFit.fill,
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -123,7 +123,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         letterSpacing: 3.5,
                       ),
                     ),
-
                     TextField(
                       controller: nameController,
                       style: const TextStyle(
@@ -145,7 +144,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         letterSpacing: 3.5,
                       ),
                     ),
-
                     TextField(
                       controller: lastNameController,
                       style: const TextStyle(
@@ -167,7 +165,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         letterSpacing: 3.5,
                       ),
                     ),
-
                     TextField(
                       controller: emailController,
                       style: const TextStyle(
@@ -179,7 +176,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-
                     const Text(
                       'Contraseña',
                       style: TextStyle(
@@ -190,7 +186,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         letterSpacing: 3.5,
                       ),
                     ),
-
                     TextField(
                       controller: passwordController,
                       obscureText: true,
@@ -202,17 +197,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         letterSpacing: 3.5,
                       ),
                     ),
-
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Número telefónico',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Color(0xFF464646),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'FiraSansCondensed',
+                        letterSpacing: 3.5,
+                      ),
+                    ),
+                    TextFormField(
+                      controller: phoneController,
+                      decoration: const InputDecoration(labelText: 'Número de teléfono'),
+                    ),
                     const SizedBox(height: 20),
-
                     Align(
                       alignment: Alignment.center,
                       child: Padding(
                         padding: const EdgeInsets.all(2),
                         child: ElevatedButton(
-                          onPressed:
-                            saveUserProfile,
-
+                          onPressed: saveUserProfile,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF88B04F),
                             minimumSize: const Size(400, 50),

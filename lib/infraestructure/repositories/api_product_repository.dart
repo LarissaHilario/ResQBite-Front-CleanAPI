@@ -144,7 +144,7 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<List<ProductModel>> getAllProducts(String token) async {
     final response = await http.get(
-      Uri.parse('http://3.223.7.73/get_all'),
+      Uri.parse('http://3.229.72.193:3000/api/v5/products'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -152,14 +152,12 @@ class ApiProductRepository implements ProductRepository {
     print(response.statusCode);
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
-      if (jsonResponse.containsKey('saucers')) {
-        List<dynamic> saucersJson = jsonResponse['saucers'];
+
+        List<dynamic> saucersJson = jsonResponse;
         return saucersJson.map((saucer) => ProductModel.fromJson(saucer)).toList();
       } else {
         throw Exception('Response does not contain "saucers"');
       }
-    } else {
-      throw Exception('Failed to load products');
-    }
+
   }
 }
