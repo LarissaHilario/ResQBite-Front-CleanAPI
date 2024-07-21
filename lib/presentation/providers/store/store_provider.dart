@@ -23,7 +23,7 @@ class StoreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<StoreModel> getStoreById(String token, int storeId) async {
+  Future<StoreModel> getStoreById(String token, String storeId) async {
     _loading = true;
     _store = await _storeRepository.getStoreById(token, storeId);
     _loading = false;

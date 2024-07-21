@@ -31,13 +31,13 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<ProductModel> getProductById(int productId, String token) async {
     final response = await http.get(
-      Uri.parse('http://3.223.7.73/get-saucer-by-id/$productId'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
+      Uri.parse('http://3.229.72.193:3000/api/v5/products/$productId'),
+
     );
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final productData = json.decode(response.body);
+      print(productData);
       return ProductModel.fromJson(productData);
     } else {
       throw Exception('Error al obtener los datos del producto');
@@ -152,7 +152,7 @@ class ApiProductRepository implements ProductRepository {
     print(response.statusCode);
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
-
+      print(jsonResponse);
         List<dynamic> saucersJson = jsonResponse;
         return saucersJson.map((saucer) => ProductModel.fromJson(saucer)).toList();
       } else {

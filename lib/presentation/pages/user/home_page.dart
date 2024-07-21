@@ -87,16 +87,17 @@ class _HomeUserPageState extends State<HomeUserPage> {
                         ),
                       ),
                       const SizedBox(width: 50),
-                      IconButton(
-                        icon: SvgPicture.asset('assets/images/log-out.svg'),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MyInitPage(),
-                            ),
-                          );
+                      InkWell(
+                        onTap: () {
                         },
+                        child: SizedBox(
+                          width: 45,
+                          height: 45,
+                          child: SvgPicture.asset(
+                            'assets/images/bag.svg',
+                            fit: BoxFit.fill,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 5),
                       InkWell(

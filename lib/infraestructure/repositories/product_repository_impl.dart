@@ -26,9 +26,7 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
     var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     if (connectivityService.status == ConnectivityStatus.connected) {
       print('tengo internet');
-      await _localProductRepository.processPendingOperations(_apiProductRepository, token);
       final products = await _apiProductRepository.getAllProductsByStore(token);
-      await _localProductRepository.saveProductsLocally(products);
       return products;
     } else {
       print('No tengo internet');

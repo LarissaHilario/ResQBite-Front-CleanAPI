@@ -8,7 +8,7 @@ import 'package:crud_r/presentation/providers/user_provider.dart';
 import 'components/card_search.dart';
 
 class StoreUserPage extends StatefulWidget {
-  final int storeId;
+  final String storeId;
 
   const StoreUserPage({Key? key, required this.storeId}) : super(key: key);
 

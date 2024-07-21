@@ -8,16 +8,15 @@ class StoreRepositoryImpl implements StoreRepository {
   Future<List<StoreModel>> getAllStores(String token) async {
   try {
   final response = await http.get(
-  Uri.parse('http://3.223.7.73/stores'),
+  Uri.parse('http://3.229.72.193:3000/api/v4/store/stores'),
   headers: {'Authorization': 'Bearer $token'});
+  print(response.statusCode);
   if (response.statusCode == 200) {
   final dynamic jsonResponse = json.decode(response.body);
-  if (jsonResponse.containsKey('stores')) {
-  List<dynamic> saucersJson = jsonResponse['stores'];
+
+  List<dynamic> saucersJson = jsonResponse;
   return saucersJson.map((saucer) => StoreModel.fromJson(saucer)).toList();
-  } else {
-  throw Exception('Response does not contain "saucers"');
-  }
+
   } else {
   throw Exception('Failed to load products');
   }
@@ -28,7 +27,7 @@ class StoreRepositoryImpl implements StoreRepository {
 
 
   @override
-  Future<StoreModel> getStoreById(String token, int storeId) async {
+  Future<StoreModel> getStoreById(String token, String storeId) async {
     try {
       final response = await http.get(
         Uri.parse('http://3.223.7.73/store/$storeId'),

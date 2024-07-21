@@ -130,6 +130,8 @@ flutter:
     - assets/images/logo-hd.png
     - assets/images/suchiapa.png
     - assets/images/tuxtla.png
+    - assets/images/date.svg
+    - assets/images/cesta-white.svg
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.
