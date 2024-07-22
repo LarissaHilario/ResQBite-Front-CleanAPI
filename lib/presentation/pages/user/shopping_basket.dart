@@ -17,7 +17,7 @@ class _ShoppingBasketPageState extends State<ShoppingBasketPage> {
     final basketItems = context.watch<BasketProvider>().basketItems;
 
     double subtotal = basketItems.fold(0.0, (sum, item) => sum + (item['product'].price * item['quantity']));
-    double total = subtotal; // Adjust if needed for taxes or discounts
+    double total = subtotal;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -79,13 +79,13 @@ class _ShoppingBasketPageState extends State<ShoppingBasketPage> {
             BasketCard(
               items: basketItems,
             ),
-            const Align(
+            Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 25, top: 40, right: 25),
+                  padding: const EdgeInsets.only(left: 25, top: 40, right: 25),
                   child: Text(
-                    'Subtotal................................\$12.00',
-                    style: TextStyle(
+                    'Subtotal................................\$${subtotal.toStringAsFixed(2)}',
+                    style: const TextStyle(
                       fontSize: 20.0,
                       color: Color(0xFF464646),
                       fontWeight: FontWeight.w500,
@@ -94,13 +94,13 @@ class _ShoppingBasketPageState extends State<ShoppingBasketPage> {
                     ),
                   ),
                 )),
-            const Align(
+            Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 25, top: 10, right: 25),
+                  padding: const EdgeInsets.only(left: 25, top: 10, right: 25),
                   child: Text(
-                    'Total......................................\$12-00}',
-                    style: TextStyle(
+                    'Total......................................\$${total.toStringAsFixed(2)}',
+                    style: const TextStyle(
                       fontSize: 20.0,
                       color: Color(0xFF464646),
                       fontWeight: FontWeight.w500,

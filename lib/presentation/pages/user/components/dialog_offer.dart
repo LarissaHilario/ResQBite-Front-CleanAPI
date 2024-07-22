@@ -65,10 +65,9 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
         'quantity': _quantity,
       });
     } else {
-      // Optionally show a message if the quantity is 0
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('No puedes agregar 0 unidades a la cesta de compras.'),
+        const SnackBar(
+          content: Text('No puedes agregar 0 unidades a la cesta de compras.'),
         ),
       );
     }
@@ -77,8 +76,8 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      insetPadding: EdgeInsets.all(8),
-      contentPadding: EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const EdgeInsets.all(8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
       content: FutureBuilder<ProductModel>(
         future: _productFuture,
         builder: (context, snapshot) {
@@ -142,7 +141,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                     borderRadius: const BorderRadius.all(
                       Radius.circular(10),
                     ),
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity,
                       child: Image(
                         image: product.imageProvider,
@@ -174,7 +173,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Padding(
-                              padding: EdgeInsets.only(top: 3),
+                              padding: const EdgeInsets.only(top: 3),
                               child: Text(
                                 ' \$${product.price}',
                                 style: const TextStyle(
@@ -276,7 +275,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                           Align(
                             alignment: Alignment.topCenter,
                             child: Padding(
-                              padding: EdgeInsets.only(top: 11, left: 10),
+                              padding: const EdgeInsets.only(top: 11, left: 10),
                               child: Text(
                                 product.expirationDate,
                                 style: const TextStyle(
@@ -294,7 +293,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 11, left: 4),
+                          padding: const EdgeInsets.only(top: 11, left: 4),
                           child: Text(
                             '${product.stock} piezas',
                             style: const TextStyle(
@@ -334,7 +333,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                                   onPressed: _decrementQuantity,
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                   child: Text(
                                     '$_quantity',
                                     style: const TextStyle(

@@ -18,7 +18,7 @@ class BasketCard extends StatelessWidget {
       children: items.asMap().entries.map((entry) {
         final index = entry.key;
         final item = entry.value;
-        final product = item['product'] as ProductModel; // Ajuste aquí
+        final product = item['product'] as ProductModel;
         final quantity = item['quantity'];
 
         return SizedBox(
@@ -32,7 +32,7 @@ class BasketCard extends StatelessWidget {
                 child: Image(
                   width: 110,
                   height: 110,
-                  image: product.imageProvider, // Usa imageProvider directamente
+                  image: product.imageProvider,
                 ),
               ),
               Container(
@@ -54,7 +54,7 @@ class BasketCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                    Text(
-                              product.name, // Ajuste aquí
+                              product.name,
                                 style: const TextStyle(
                                   fontSize: 20.0,
                                   color: Colors.black,
@@ -64,7 +64,7 @@ class BasketCard extends StatelessWidget {
                                 ), overflow: TextOverflow.ellipsis,
                               ),
                                   Text(
-                                    product.storeName ?? 'Unknown Store', // Ajuste aquí
+                                    product.storeName ?? 'Unknown Store',
                                     style: const TextStyle(
                                       fontSize: 14.0,
                                       color: Colors.black87,
@@ -96,7 +96,7 @@ class BasketCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 10.0, top: 5.0),
                             child: Text(
-                              '\$${product.price}', // Ajuste aquí
+                              '\$${product.price}',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.black87,
@@ -117,7 +117,7 @@ class BasketCard extends StatelessWidget {
                                 onPressed: () => context.read<BasketProvider>().decrementQuantity(index),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 2.0),
                                 child: Text(
                                   '$quantity',
                                   style: const TextStyle(
