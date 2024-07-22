@@ -6,7 +6,9 @@ import 'package:crud_r/domain/use_cases/get_all_products_usecase.dart';
 import 'package:crud_r/domain/use_cases/store/get_store_byid_usecase.dart';
 import 'package:crud_r/infraestructure/repositories/store/store_repository_impl.dart';
 import 'package:crud_r/presentation/pages/splash_page.dart';
+import 'package:crud_r/presentation/pages/user/home_page.dart';
 import 'package:crud_r/presentation/pages/user/search_page.dart';
+import 'package:crud_r/presentation/providers/basketProvider.dart';
 import 'package:crud_r/presentation/providers/product_provider.dart';
 import 'package:crud_r/presentation/providers/store/store_provider.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +49,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => StoreProvider()),
         ChangeNotifierProvider(create: (_) =>  ProductProvider()),
+        ChangeNotifierProvider(create: (_) => BasketProvider()),
         ChangeNotifierProvider(create: (_)=> ConnectivityService()),
         Provider(create: (_) => ApiProductRepository()),
         Provider(create: (_) => LocalProductRepository()),

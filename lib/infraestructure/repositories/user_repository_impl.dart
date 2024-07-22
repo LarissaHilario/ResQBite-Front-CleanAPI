@@ -4,12 +4,15 @@ import 'dart:io';
 import 'package:crud_r/domain/models/user_model.dart';
 import 'package:crud_r/domain/repositories/user_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class UserRepositoryImpl implements UserRepository {
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+
   @override
   Future<UserModel> loginUser(String email, String password) async {
-    const url = 'http://3.223.7.73/signin/';
+    const url = 'https://resqbite-user.integrador.xyz:5000/signin';
     final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
@@ -19,7 +22,9 @@ class UserRepositoryImpl implements UserRepository {
     );
     print(response.statusCode);
     if (response.statusCode == 200) {
-      final token = jsonDecode(response.body);
+      final responseBody = jsonDecode(response.body);
+      final token = responseBody['token'];
+
       return UserModel(token: token, email: email);
     } else {
       print('errorrrr');
@@ -28,14 +33,19 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  registerUser(String name, String lastName, String email,
-      String password) async {
-    const url = 'http://3.223.7.73/signup';
+  Future<bool> registerUser(String name, String lastName, String email, String password, String phone) async {
+    const url = 'http://3.229.72.193:3000/api/v1/user/signup';
     final userData = {
-      'name': name,
-      'last_name': lastName,
       'email': email,
       'password': password,
+      'location': 'suchiapa',
+      'user_type_suscriber': "COMUN",
+      'contact': {
+        'name': name,
+        'last_name': lastName,
+        'address': 'suchiapa',
+        "phone_number": phone,
+      },
     };
 
     final response = await http.post(
@@ -45,42 +55,31 @@ class UserRepositoryImpl implements UserRepository {
       },
       body: jsonEncode(userData),
     );
+
     print('Initial response status code: ${response.statusCode}');
     print('Initial response headers: ${response.headers}');
 
-    if (response.statusCode == 308) {
-      final redirectUrl = response.headers["location"];
-      if (redirectUrl != null) {
-        final getResponse = await http.post(
-          Uri.parse(redirectUrl),
-          headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-          },
-          body: jsonEncode(userData),
-        );
-
-        print('Redirect response status code: ${getResponse.statusCode}');
-        print('Redirect response body: ${getResponse.body}');
-
-        if (getResponse.statusCode == 200) {
-          final responseBody = jsonDecode(getResponse.body);
-          return responseBody['user'] == true;
-        }
-      }
-      else {
-        throw Exception('Failed to register user after redirection');
+    // Check if response status indicates successful user creation
+    if (response.statusCode == 201) {
+      final responseBody = jsonDecode(response.body);
+      if (responseBody.containsKey('user') && responseBody['user'] is Map) {
+        return true; // Assuming user creation was successful
+      } else {
+        throw Exception('Unexpected response format');
       }
     }
+
+    throw Exception('Failed to register user');
   }
 
+
   @override
-  Future<Map<String, dynamic>> getUserByEmail(String token,
-      String email) async {
-    const url = 'http://3.223.7.73/get_by_email';
+  Future<Map<String, dynamic>> getUserByEmail(
+      String token, String email) async {
+    const url = 'http://3.229.72.193:3000/api/v1/user/user_by_email';
     final response = await Dio().get(
       url,
       queryParameters: {'email': email},
-
       options: Options(
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
@@ -97,13 +96,12 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   updateUserLocation(String token, String location) async {
-    const url = 'http://3.223.7.73/update_user_location';
-
+    const url = 'http://3.229.72.193:3000/api/v1/user/update_location';
     final body = jsonEncode({
       'location': location,
     });
 
-    final response = await http.post(
+    final response = await http.put(
       Uri.parse(url),
       headers: <String, String>{
         HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
@@ -121,17 +119,14 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> updateUserProfile(String token, String userId,
-      Map<String, dynamic> updatedData) async {
+  Future<void> updateUserProfile(
+      String token, Map<String, dynamic> updatedData) async {
     print(updatedData);
     try {
-
       final response = await Dio().put(
-        'http://3.223.7.73/user-update/$userId',
+        'http://3.229.72.193:3000/api/v1/user/update_user',
         options: Options(
-          headers: {
-            HttpHeaders.authorizationHeader: 'Bearer $token'
-          },
+          headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
         ),
         data: updatedData,
       );
@@ -146,5 +141,16 @@ class UserRepositoryImpl implements UserRepository {
       print('Error updating user profile: $e');
       throw Exception('Failed to update user profile: $e');
     }
+  }
+  Future<void> savePassword(String password) async {
+    await _secureStorage.write(key: 'user_password', value: password);
+  }
+
+  Future<String?> getPassword() async {
+    return await _secureStorage.read(key: 'user_password');
+  }
+
+  Future<void> deletePassword() async {
+    await _secureStorage.delete(key: 'user_password');
   }
 }

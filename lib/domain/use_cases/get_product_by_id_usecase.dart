@@ -14,8 +14,8 @@ class GetProductByIdUseCase {
   Future<ProductModel> execute(int productId, String token) async {
     try {
       final product = await _productRepository.getProductById(productId, token);
-      StoreModel store = await _storeRepository.getStoreById(token, product.storeId!);
-      product.storeName = store.name;
+      //StoreModel store = await _storeRepository.getStoreById(token, product.storeId!);
+      //product.storeName = store.name;
       return product;
     } catch (error) {
       throw Exception('Error al obtener los datos del producto: $error');

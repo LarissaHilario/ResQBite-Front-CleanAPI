@@ -6,7 +6,7 @@ class GetStoreByIdUseCase {
 
   GetStoreByIdUseCase(this.storeRepository);
 
-  Future<StoreModel> execute(String token, int storeId) {
+  Future<StoreModel> execute(String token, String storeId) {
     return storeRepository.getStoreById(token, storeId);
   }
 }

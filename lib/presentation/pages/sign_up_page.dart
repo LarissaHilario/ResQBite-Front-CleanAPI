@@ -84,6 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _lastnameController.text,
           _emailController.text,
           _passwordController.text,
+          _cellphoneController.text,
         );
 
         if (registered) {

@@ -43,6 +43,7 @@ dependencies:
   photo_manager: ^2.6.0
   google_maps_flutter: ^2.7.0
   flutter_dotenv: ^5.1.0
+  flutter_secure_storage: ^9.2.2
 
 
 
@@ -129,6 +130,10 @@ flutter:
     - assets/images/logo-hd.png
     - assets/images/suchiapa.png
     - assets/images/tuxtla.png
+    - assets/images/date.svg
+    - assets/images/cesta-white.svg
+    - assets/images/cesta-black.svg
+    - assets/images/delete-rojo.svg
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.

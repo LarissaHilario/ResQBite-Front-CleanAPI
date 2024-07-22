@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class StoreModel {
   final String address;
-  final int id;
+  final String id;
   final String image;
   final String location;
   final String name;

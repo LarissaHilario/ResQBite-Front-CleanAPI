@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UbicationsWidget extends StatelessWidget {
-  final void Function(LatLng) onLocationSelected;
+  final void Function(String)  onLocationSelected;
 
   const UbicationsWidget({Key? key, required this.onLocationSelected}) : super(key: key);
 
@@ -35,7 +35,7 @@ class UbicationsWidget extends StatelessWidget {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap: () => onLocationSelected(const LatLng(16.629444 , -93.091667)),
+                            onTap: () =>onLocationSelected('suchiapa'),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: const Image(
@@ -71,7 +71,7 @@ class UbicationsWidget extends StatelessWidget {
                           child: Row(
                             children: [
                               GestureDetector(
-                                onTap: () => onLocationSelected(const LatLng(16.75973, -93.11308)), // Coordenadas de Tuxtla
+                                onTap: () => onLocationSelected('tuxtla'), // Coordenadas de Tuxtla
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: const Image(
