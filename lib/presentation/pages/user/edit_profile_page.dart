@@ -210,7 +210,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     TextFormField(
                       controller: phoneController,
-                      decoration: const InputDecoration(labelText: 'Número de teléfono'),
+
                     ),
                     const SizedBox(height: 20),
                     Align(

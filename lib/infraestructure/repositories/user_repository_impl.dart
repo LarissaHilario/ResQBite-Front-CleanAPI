@@ -12,7 +12,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<UserModel> loginUser(String email, String password) async {
-    const url = 'http://3.229.72.193:3000/api/v1/user/signin';
+    const url = 'https://resqbite-user.integrador.xyz:5000/signin';
     final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{

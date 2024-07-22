@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../domain/use_cases/get_product_by_id_usecase.dart';
+import '../../../providers/basketProvider.dart';
 import '../../../providers/user_provider.dart';
 
 class MyDialogOfferProduct extends StatefulWidget {
@@ -21,6 +22,7 @@ class MyDialogOfferProduct extends StatefulWidget {
 
 class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
   late Future<ProductModel> _productFuture;
+  int _quantity = 0;
 
   @override
   void initState() {
@@ -38,8 +40,38 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
     return await getProductByIdUseCase.execute(widget.productId, token);
   }
 
-  void closeAlert() {
-    Navigator.pop(context);
+  void _incrementQuantity(ProductModel product) {
+    setState(() {
+      if (_quantity < product.stock) {
+        _quantity++;
+      }
+    });
+  }
+
+  void _decrementQuantity() {
+    setState(() {
+      if (_quantity > 0) {
+        _quantity--;
+      }
+    });
+  }
+
+  void _addToBasket(ProductModel product) {
+    if (_quantity > 0) {
+      final basketProvider = Provider.of<BasketProvider>(context, listen: false);
+      basketProvider.addItem(product, _quantity);
+      Navigator.pop(context, {
+        'product': product,
+        'quantity': _quantity,
+      });
+    } else {
+      // Optionally show a message if the quantity is 0
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No puedes agregar 0 unidades a la cesta de compras.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -58,7 +90,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
           } else if (snapshot.hasData) {
             final product = snapshot.data!;
             return SizedBox(
-              height: 530,
+              height: 540,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -163,14 +195,13 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: const EdgeInsets.only( right: 5),
+                              padding: const EdgeInsets.only(right: 5),
                               child: SvgPicture.asset(
                                 'assets/images/ubication-store.svg',
                                 width: 30,
                               ),
                             ),
                           ),
-
                           Text(
                             product.storeName ?? 'Cargando...',
                             style: const TextStyle(
@@ -217,7 +248,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 10, left:4),
+                          padding: EdgeInsets.only(top: 10, left: 4),
                           child: Text(
                             'Fecha de vencimiento',
                             style: TextStyle(
@@ -235,7 +266,7 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: const EdgeInsets.only( left: 4, top: 5),
+                              padding: const EdgeInsets.only(left: 4, top: 5),
                               child: SvgPicture.asset(
                                 'assets/images/date.svg',
                                 width: 30,
@@ -248,7 +279,6 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                               padding: EdgeInsets.only(top: 11, left: 10),
                               child: Text(
                                 product.expirationDate,
-                                //'${product.form.approximate_expiration_date}',
                                 style: const TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black,
@@ -279,88 +309,88 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
                       ),
                       const SizedBox(height: 10),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 125,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                                border: Border.all(
-                                  color: const Color(0xFF88B04F),
-                                  width: 1.0,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 130,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                              border: Border.all(
+                                color: const Color(0xFF88B04F),
+                                width: 1.0,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: SvgPicture.asset(
+                                    'assets/images/minus.svg',
+                                    height: 30,
+                                  ),
+                                  onPressed: _decrementQuantity,
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: SvgPicture.asset(
-                                      'assets/images/minus.svg',
-                                      height: 30,
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                                    child: Text(
-                                      '0',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w800,
-                                      ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.0),
+                                  child: Text(
+                                    '$_quantity',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: SvgPicture.asset(
-                                      'assets/images/more.svg',
-                                      height: 30,
-                                    ),
-                                    onPressed: () {},
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: SvgPicture.asset(
+                                    'assets/images/more.svg',
+                                    height: 30,
                                   ),
-                                ],
-                              ),
+                                  onPressed: () => _incrementQuantity(product),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF88B04F),
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              width: 165,
-                              height: 36,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 5),
-                                    child: SvgPicture.asset(
-                                      'assets/images/cesta-white.svg',
-                                      height: 22,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(EdgeInsets.all(5)),
-                                    ),
-                                    child: const Text(
-                                      'Añadir a la cesta',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF88B04F),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
                             ),
-                          ]
-                      )
+                            width: 160,
+                            height: 36,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: SvgPicture.asset(
+                                    'assets/images/cesta-white.svg',
+                                    height: 22,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () => _addToBasket(product),
+                                  style: ButtonStyle(
+                                    padding: WidgetStateProperty.all(const EdgeInsets.all(5)),
+                                  ),
+                                  child: const Text(
+                                    'Añadir a la cesta',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
@@ -374,4 +404,3 @@ class _MyDialogOfferProductState extends State<MyDialogOfferProduct> {
     );
   }
 }
-

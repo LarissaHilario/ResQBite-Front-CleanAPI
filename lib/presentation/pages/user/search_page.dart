@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
 import '../splash_page.dart';
+import 'components/header.dart';
 class SearchPage extends StatefulWidget {
   final String category;
   const SearchPage({super.key, required this.category});
@@ -47,62 +48,8 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       body: Column(
         children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20, top: 50, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'RESQBITE',
-                    style: TextStyle(
-                      fontSize: 26.0,
-                      color: Color(0xFF464646),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'FiraSansCondensed',
-                      letterSpacing: 5,
-                    ),
-                  ),
-                  const SizedBox(width: 50),
-                  IconButton(
-                    icon: SvgPicture.asset('assets/images/log-out.svg'),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyInitPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Image.asset(
-                      'assets/images/avatar.png',
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const HeaderComponent(),
           const SizedBox(height: 10),
-          SearchBarComponent(
-            hintText: 'Busca tus productos favoritos ...',
-            onChanged: _filterProductByName,
-            textController: _searchController,
-          ),
-          const SizedBox(height: 5),
-          const Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(left: 30, right: 30),
-              child: SizedBox(height: 100, child: CategoriesComponent()),
-            ),
-          ),
           Expanded(
             child: Consumer<ProductProvider>(
               builder: (_, controller, __) {
