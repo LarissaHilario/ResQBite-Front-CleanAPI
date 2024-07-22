@@ -3,17 +3,14 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crud_r/domain/use_cases/add_product_usecase.dart';
 import 'package:crud_r/domain/use_cases/get_all_products_usecase.dart';
-import 'package:crud_r/domain/use_cases/store/get_store_byid_usecase.dart';
-import 'package:crud_r/infraestructure/repositories/store/store_repository_impl.dart';
 import 'package:crud_r/presentation/pages/splash_page.dart';
-import 'package:crud_r/presentation/pages/user/home_page.dart';
-import 'package:crud_r/presentation/pages/user/search_page.dart';
 import 'package:crud_r/presentation/providers/basketProvider.dart';
 import 'package:crud_r/presentation/providers/product_provider.dart';
 import 'package:crud_r/presentation/providers/store/store_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
-import 'package:crud_r/presentation/pages/login_page.dart';
 import 'package:crud_r/presentation/providers/connectivity.dart';
 import 'package:crud_r/presentation/providers/user_provider.dart';
 import 'package:crud_r/infraestructure/repositories/api_product_repository.dart';
@@ -42,7 +39,14 @@ class ProductSyncManager {
     });
   }
 }
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  print('Stripe Publishable Key: ${dotenv.env["STRIPE_PUBLISH_KEY"]}');// Si el archivo está en la raíz, no necesitas especificar fileName
+  Stripe.publishableKey = dotenv.env["STRIPE_PUBLISH_KEY"]!;
+  Stripe.merchantIdentifier = 'merchant.flutter.stripe.test';
+  Stripe.urlScheme = 'flutterstripe';
+  await Stripe.instance.applySettings();
   runApp(
     MultiProvider(
       providers: [

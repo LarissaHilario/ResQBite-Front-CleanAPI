@@ -44,4 +44,8 @@ class BasketProvider with ChangeNotifier {
       removeItem(index);
     }
   }
+  void clearBasket() {
+    _items.clear();
+    notifyListeners();
+  }
 }
