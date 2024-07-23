@@ -4,7 +4,7 @@ import 'package:crud_r/domain/models/product_model.dart';
 
 
 abstract class ProductRepository {
-  Future<List<ProductModel>> getAllProductsByStore(String token);
+  Future<List<ProductModel>> getAllProductsByStore(String token, String storeId);
   Future<void> deleteProduct(String token, int productId);
   Future<ProductModel> getProductById(int productId, String token);
   Future<void> createProduct({

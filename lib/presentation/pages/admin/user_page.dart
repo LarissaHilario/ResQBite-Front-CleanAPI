@@ -28,7 +28,7 @@ class _UserPageState extends State<UserPage> {
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     if (token != null) {
       final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
-      futureProducts = getAllProductsUseCase.execute(token);
+      //futureProducts = getAllProductsUseCase.execute(token);
     } else {
       futureProducts = Future.error('User is not authenticated');
     }

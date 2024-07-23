@@ -7,9 +7,9 @@ import 'package:http/http.dart' as http;
 
 class ApiProductRepository implements ProductRepository {
   @override
-  Future<List<ProductModel>> getAllProductsByStore(String token) async {
+  Future<List<ProductModel>> getAllProductsByStore(String token, String storeId) async {
     final response = await http.get(
-      Uri.parse('http://3.223.7.73/get-saucers-by-store'),
+      Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v5/product/products/store/$storeId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

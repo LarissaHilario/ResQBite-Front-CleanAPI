@@ -133,7 +133,10 @@ flutter:
     - assets/images/cesta-white.svg
     - assets/images/cesta-black.svg
     - assets/images/delete-rojo.svg
-
+    - assets/images/loading.png
+    - assets/images/loading.svg
+    - assets/images/load.svg
+    - .env
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.

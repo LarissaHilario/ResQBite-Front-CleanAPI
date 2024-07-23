@@ -49,7 +49,7 @@ class _HomeAdmiPageState extends State<HomePage> {
         futureProducts = _localProductRepository.getAllProducts();
       } else {
         final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
-        futureProducts = getAllProductsUseCase.execute(token!);
+        //futureProducts = getAllProductsUseCase.execute(token!, );
       }
     });
 

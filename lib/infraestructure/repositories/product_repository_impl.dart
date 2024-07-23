@@ -22,11 +22,11 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
       );
 
   @override
-  Future<List<ProductModel>> getAllProductsByStore(String token) async {
+  Future<List<ProductModel>> getAllProductsByStore(String token, String storeId) async {
     var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     if (connectivityService.status == ConnectivityStatus.connected) {
       print('tengo internet');
-      final products = await _apiProductRepository.getAllProductsByStore(token);
+      final products = await _apiProductRepository.getAllProductsByStore(token, storeId);
       return products;
     } else {
       print('No tengo internet');

@@ -55,7 +55,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                      padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                       child: Text(
                         store.name,
                         style: const TextStyle(
@@ -87,7 +87,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                 ),
                               ),
                               Text(
-                                '',
+                                '${store.street} #${store.number} col. ${store.neighborhood}, ${store.city}',
                                 style: const TextStyle(
                                   fontSize: 14.0,
                                   color: Color(0xFF464646),
@@ -113,8 +113,8 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                       ),
                                     ),
                                   ),
-                                  const Text(
-                                    ' 09:00 hrs - 19:00 hrs',
+                                  Text(
+                                    ' ${store.openingTime} hrs - ${store.closingTime} hrs',
                                     style: TextStyle(
                                       fontSize: 14.0,
                                       color: Color(0xFF464646),

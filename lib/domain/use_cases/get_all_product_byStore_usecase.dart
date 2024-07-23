@@ -6,7 +6,7 @@ class GetAllProductsByStoreUseCase {
 
   GetAllProductsByStoreUseCase(this._productRepository);
 
-  Future<List<ProductModel>> execute(String token) async {
-    return await _productRepository.getAllProductsByStore(token);
+  Future<List<ProductModel>> execute(String token, String storeId) async {
+    return await _productRepository.getAllProducts(token);
   }
 }

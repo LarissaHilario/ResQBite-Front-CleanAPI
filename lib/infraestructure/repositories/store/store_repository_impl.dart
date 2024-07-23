@@ -30,7 +30,7 @@ class StoreRepositoryImpl implements StoreRepository {
   Future<StoreModel> getStoreById(String token, String storeId) async {
     try {
       final response = await http.get(
-        Uri.parse('http://3.223.7.73/store/$storeId'),
+        Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v4/store/store/$storeId'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
