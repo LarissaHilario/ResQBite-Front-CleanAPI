@@ -37,9 +37,9 @@ class _LocationState extends State<LocationPage> {
   }
 
   void _onLocationSelected(String location) async {
-    Navigator.pop(context); // Cierra el BottomSheet
+    Navigator.pop(context);
 
-    // Establecer las coordenadas correspondientes para el mapa
+
     LatLng coordinates;
     if (location == 'suchiapa') {
       coordinates = const LatLng(16.629444, -93.091667);

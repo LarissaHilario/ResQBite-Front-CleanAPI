@@ -53,16 +53,16 @@ class BasketCard extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                   Text(
-                              product.name,
-                                style: const TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'FiraSansCondensed',
-                                  letterSpacing: 3,
-                                ), overflow: TextOverflow.ellipsis,
-                              ),
+                                  Text(
+                                    product.name,
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'FiraSansCondensed',
+                                      letterSpacing: 3,
+                                    ), overflow: TextOverflow.ellipsis,
+                                  ),
                                   Text(
                                     product.storeName ?? 'Unknown Store',
                                     style: const TextStyle(
