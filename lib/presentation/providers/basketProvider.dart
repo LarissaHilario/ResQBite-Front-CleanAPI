@@ -18,6 +18,12 @@ class BasketProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+  void updateItemQuantity(int index, int quantity) {
+    if (index >= 0 && index < _items.length) {
+      _items[index]['quantity'] = quantity;
+      notifyListeners();
+    }
+  }
 
   void removeItem(int index) {
     _items.removeAt(index);
@@ -37,11 +43,17 @@ class BasketProvider with ChangeNotifier {
   }
 
   void decrementQuantity(int index) {
-    if (_items[index]['quantity'] > 1) {
-      _items[index]['quantity']--;
-      notifyListeners();
-    } else {
-      removeItem(index);
+    if (index >= 0 && index < _items.length) {
+      final currentQuantity = _items[index]['quantity'];
+      if (currentQuantity > 0) {
+        _items[index]['quantity'] = currentQuantity - 1;
+        notifyListeners();
+      }
     }
+  }
+
+  void clearBasket() {
+    _items.clear();
+    notifyListeners();
   }
 }

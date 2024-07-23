@@ -26,11 +26,11 @@ class SearchBarComponent extends StatelessWidget {
       height: 52.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
-        color:
-        const Color(0xFF88B04F).withOpacity(0.20),
+
+
         border: Border.all(
           color: const Color(0xFF88B04F).withOpacity(0.5),
-          width: 3.0,
+          width: 1.0,
         ),
       ),
       child: Container(

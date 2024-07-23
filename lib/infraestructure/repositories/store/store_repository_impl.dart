@@ -6,26 +6,24 @@ import 'package:http/http.dart' as http;
 class StoreRepositoryImpl implements StoreRepository {
   @override
   Future<List<StoreModel>> getAllStores(String token) async {
-  try {
-  final response = await http.get(
-  Uri.parse('http://3.229.72.193:3000/api/v4/store/stores'),
-  headers: {'Authorization': 'Bearer $token'});
-  print(response.statusCode);
-  if (response.statusCode == 200) {
-  final dynamic jsonResponse = json.decode(response.body);
-
-  List<dynamic> saucersJson = jsonResponse;
-  return saucersJson.map((saucer) => StoreModel.fromJson(saucer)).toList();
-
-  } else {
-  throw Exception('Failed to load products');
+    try {
+      final response = await http.get(
+          Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v4/store/stores'),
+          headers: {'Authorization': 'Bearer $token'});
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        final dynamic jsonResponse = json.decode(response.body);
+        List<dynamic> saucersJson = jsonResponse;
+        return saucersJson
+            .map((saucer) => StoreModel.fromJson(saucer))
+            .toList();
+      } else {
+        throw Exception('Failed to load products');
+      }
+    } catch (error) {
+      throw Exception('Error con el servidor: $error');
+    }
   }
-  } catch (error) {
-  throw Exception('Error con el servidor: $error');
-  }
-  }
-
-
   @override
   Future<StoreModel> getStoreById(String token, String storeId) async {
     try {

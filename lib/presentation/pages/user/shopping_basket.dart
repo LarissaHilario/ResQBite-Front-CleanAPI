@@ -1,4 +1,6 @@
+import 'package:crud_r/infraestructure/repositories/payment/payment.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../../providers/basketProvider.dart';
@@ -12,13 +14,71 @@ class ShoppingBasketPage extends StatefulWidget {
 }
 
 class _ShoppingBasketPageState extends State<ShoppingBasketPage> {
+  String selectedCurrency = 'USD';
+  String amount = '0';
+  String description = 'Suscription';
+
+  bool hasDonated = false;
+  Future<void> initPaymentSheet() async {
+    try {
+      final clientSecret = await createPaymentIntent(
+        amount: amount,
+        currency: selectedCurrency,
+        description: 'pago',
+        name: 'larissa',
+        city: 'oaxaca',
+        state: 'oaxaca',
+        country: 'mexico',
+      );
+
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: 'Test',
+          style: ThemeMode.system,
+        ),
+      );
+    } catch (e) {
+      print('Error initializing payment sheet: $e');
+    }
+  }
+
+  Future<void> _handlePayment() async {
+    await initPaymentSheet();
+
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      context.read<BasketProvider>().clearBasket();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Pago realizado",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      print("Oops ocurrió un fallo en el pago");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Oops ocurrió un fallo en el pago",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final basketItems = context.watch<BasketProvider>().basketItems;
 
     double subtotal = basketItems.fold(0.0, (sum, item) => sum + (item['product'].price * item['quantity']));
     double total = subtotal;
-
+    amount = (total * 1).toStringAsFixed(0);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -114,7 +174,9 @@ class _ShoppingBasketPageState extends State<ShoppingBasketPage> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 40),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await _handlePayment();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF88B04F),
                     minimumSize: const Size(330, 50),

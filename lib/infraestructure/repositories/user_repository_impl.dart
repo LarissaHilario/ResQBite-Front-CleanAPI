@@ -12,7 +12,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<UserModel> loginUser(String email, String password) async {
-    const url = 'https://resqbite-user.integrador.xyz:5000/signin';
+    const url = 'https://resqbite-gateway.integrador.xyz:3000/api/v1/user/signin';
     final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
@@ -34,7 +34,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<bool> registerUser(String name, String lastName, String email, String password, String phone) async {
-    const url = 'http://3.229.72.193:3000/api/v1/user/signup';
+    const url = 'https://resqbite-gateway.integrador.xyz:3000/api/v1/user/signup';
     final userData = {
       'email': email,
       'password': password,
@@ -76,7 +76,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Map<String, dynamic>> getUserByEmail(
       String token, String email) async {
-    const url = 'http://3.229.72.193:3000/api/v1/user/user_by_email';
+    const url = 'https://resqbite-gateway.integrador.xyz:3000/api/v1/user/user_by_email';
     final response = await Dio().get(
       url,
       queryParameters: {'email': email},
@@ -96,7 +96,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   updateUserLocation(String token, String location) async {
-    const url = 'http://3.229.72.193:3000/api/v1/user/update_location';
+    const url = 'https://resqbite-gateway.integrador.xyz:3000/api/v1/user/update_location';
     final body = jsonEncode({
       'location': location,
     });
@@ -124,7 +124,7 @@ class UserRepositoryImpl implements UserRepository {
     print(updatedData);
     try {
       final response = await Dio().put(
-        'http://3.229.72.193:3000/api/v1/user/update_user',
+        'https://resqbite-gateway.integrador.xyz:3000/api/v1/user/update_user',
         options: Options(
           headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
         ),

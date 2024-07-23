@@ -31,7 +31,7 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<ProductModel> getProductById(int productId, String token) async {
     final response = await http.get(
-      Uri.parse('http://3.229.72.193:3000/api/v5/products/$productId'),
+      Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v5/product/products/$productId'),
 
     );
     print(response.statusCode);
@@ -144,10 +144,8 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<List<ProductModel>> getAllProducts(String token) async {
     final response = await http.get(
-      Uri.parse('http://3.229.72.193:3000/api/v5/products'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
+      Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v5/product/products'),
+
     );
     print(response.statusCode);
     if (response.statusCode == 200) {
