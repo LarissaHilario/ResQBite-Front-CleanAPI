@@ -87,7 +87,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                 ),
                               ),
                               Text(
-                                store.address,
+                                '',
                                 style: const TextStyle(
                                   fontSize: 14.0,
                                   color: Color(0xFF464646),

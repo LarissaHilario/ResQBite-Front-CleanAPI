@@ -10,7 +10,9 @@ class StoreRepositoryImpl implements StoreRepository {
       final response = await http.get(
           Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v4/store/stores'),
           headers: {'Authorization': 'Bearer $token'});
+
       print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         final dynamic jsonResponse = json.decode(response.body);
         List<dynamic> saucersJson = jsonResponse;
