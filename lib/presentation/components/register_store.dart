@@ -1,9 +1,14 @@
-import 'package:crud_r/infraestructure/repositories/user_repository_impl.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
-import '../../domain/repositories/user_repository.dart';
 import 'dart:io';
+
+import 'package:crud_r/domain/models/store_model.dart';
+import 'package:crud_r/domain/repositories/store_repository.dart';
+import 'package:crud_r/presentation/pages/admin/tap_bar_admi.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+import '../../infraestructure/repositories/store/store_repository_impl.dart';
+import '../providers/user_provider.dart';
 
 class RegisterStorePage extends StatefulWidget {
   const RegisterStorePage({super.key});
@@ -14,6 +19,10 @@ class RegisterStorePage extends StatefulWidget {
 
 class _RegisterStorePageState extends State<RegisterStorePage> {
   final _formKey = GlobalKey<FormState>();
+  final _step1Key = GlobalKey<FormState>();
+  final _step2Key = GlobalKey<FormState>();
+  final _step3Key = GlobalKey<FormState>();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _rfcController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
@@ -21,12 +30,15 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
   final TextEditingController _neighborhoodController = TextEditingController();
   final TextEditingController _referenceController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+
   TimeOfDay _openingTime = TimeOfDay.now();
   TimeOfDay _closingTime = TimeOfDay.now();
   String? _selectedCity;
   File? _image;
 
-  final UserRepository _userRepository = UserRepositoryImpl();
+  final StoreRepository _storeRepository = StoreRepositoryImpl();
+
+  int _currentStep = 0;
 
   String? validateNotEmpty(String? value, String fieldName) {
     if (value == null || value.isEmpty) {
@@ -47,11 +59,66 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
     return null;
   }
 
-  Future<void> _createUser() async {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _createStore() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final token = userProvider.user?.token;
+    if (_image == null) {
+      print('Error: No se ha seleccionado ninguna imagen.');
+      return;
+    }
 
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Token de usuario no encontrado.')),
+      );
+      return;
+    }
+
+    // Validar formularios de cada paso
+    bool isStep1Valid = _step1Key.currentState?.validate() ?? false;
+    bool isStep2Valid = _step2Key.currentState?.validate() ?? false;
+
+    if (isStep1Valid && isStep2Valid) {
+      try {
+        await _storeRepository.createStore(
+          name: _nameController.text,
+          rfc: _rfcController.text,
+          street: _streetController.text,
+          number: _numberController.text,
+          neighborhood: _neighborhoodController.text,
+          reference: _referenceController.text,
+          phone: _phoneNumberController.text,
+          city: _selectedCity ?? '',
+          openingTime: _openingTime.format(context),
+          closingTime: _closingTime.format(context),
+          image: _image!,
+          token: token,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tienda registrada con éxito')),
+
+        );
+        Navigator.push(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (context) => const  TapBarAdmi()),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al registrar la tienda: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor complete todos los campos del formulario')),
+      );
     }
   }
+
+
+
+
+
 
   Future<void> _selectTime(BuildContext context, bool isOpening) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -70,13 +137,110 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
-    }
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
+  Widget _buildStep1() {
+    return Form(
+      key: _step1Key,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _nameController,
+            decoration: const InputDecoration(labelText: 'Nombre'),
+            validator: (value) => validateNotEmpty(value, 'el nombre'),
+          ),
+          TextFormField(
+            controller: _rfcController,
+            decoration: const InputDecoration(labelText: 'RFC'),
+            validator: (value) => validateNotEmpty(value, 'el RFC'),
+          ),
+          TextFormField(
+            controller: _streetController,
+            decoration: const InputDecoration(labelText: 'Calle'),
+            validator: (value) => validateNotEmpty(value, 'la calle'),
+          ),
+          TextFormField(
+            controller: _numberController,
+            decoration: const InputDecoration(labelText: 'Número'),
+            validator: (value) => validateNotEmpty(value, 'el número'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildStep2() {
+    return Form(
+      key: _step2Key,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _neighborhoodController,
+            decoration: const InputDecoration(labelText: 'Colonia'),
+            validator: (value) => validateNotEmpty(value, 'la colonia'),
+          ),
+          TextFormField(
+            controller: _referenceController,
+            decoration: const InputDecoration(labelText: 'Referencia'),
+            validator: (value) => validateNotEmpty(value, 'la referencia'),
+          ),
+          TextFormField(
+            controller: _phoneNumberController,
+            decoration: const InputDecoration(labelText: 'Teléfono'),
+            validator: validatePhoneNumber,
+          ),
+          DropdownButtonFormField<String>(
+            value: _selectedCity,
+            items: ['Ciudad 1', 'Ciudad 2', 'Ciudad 3'].map((String city) {
+              return DropdownMenuItem<String>(
+                value: city,
+                child: Text(city),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedCity = value;
+              });
+            },
+            decoration: const InputDecoration(labelText: 'Ciudad'),
+            validator: (value) => validateNotEmpty(value, 'la ciudad'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStep3() {
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Hora de apertura'),
+          trailing: Text(_openingTime.format(context)),
+          onTap: () => _selectTime(context, true),
+        ),
+        ListTile(
+          title: const Text('Hora de cierre'),
+          trailing: Text(_closingTime.format(context)),
+          onTap: () => _selectTime(context, false),
+        ),
+        _image == null
+            ? const Text('No se ha seleccionado ninguna imagen')
+            : Image.file(_image!),
+        ElevatedButton(
+          onPressed: _pickImage,
+          child: const Text('Seleccionar imagen'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -100,17 +264,37 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                           alignment: Alignment.topCenter,
                           child: Padding(
                             padding: EdgeInsets.only(),
-                            child: Row(
+                            child: Column(
                               children: [
-                                Text(
-                                  '¿Tienes un comercio?\n¡Regístralo!',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Color(0xFF464646),
-                                    fontWeight: FontWeight.w300,
-                                    fontFamily: 'FiraSansCondensed',
-                                    letterSpacing: 3.5,
-                                  ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '¿Tienes un comercio?',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Color(0xFF464646),
+                                        fontWeight: FontWeight.w300,
+                                        fontFamily: 'FiraSansCondensed',
+                                        letterSpacing: 3.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '¡Regístralo!',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Color(0xFF464646),
+                                        fontWeight: FontWeight.w300,
+                                        fontFamily: 'FiraSansCondensed',
+                                        letterSpacing: 3.5,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -122,138 +306,66 @@ class _RegisterStorePageState extends State<RegisterStorePage> {
                             padding: const EdgeInsets.only(),
                             child: SizedBox(
                               width: 300,
-                              child: Form(
-                                key: _formKey,
-                                child: Column(
-                                  children: [
-                                    TextFormField(
-                                      controller: _nameController,
-                                      validator: (value) => validateNotEmpty(value, "el nombre"),
-                                      decoration: const InputDecoration(
-                                        labelText: 'Nombre',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _rfcController,
-                                      validator: (value) => validateNotEmpty(value, "el RFC"),
-                                      decoration: const InputDecoration(
-                                        labelText: 'RFC',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _streetController,
-                                      validator: (value) => validateNotEmpty(value, "la calle"),
-                                      decoration: const InputDecoration(
-                                        labelText: 'Calle',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _numberController,
-                                      validator: (value) => validateNotEmpty(value, "el número"),
-                                      decoration: const InputDecoration(
-                                        labelText: 'Número',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _neighborhoodController,
-                                      validator: (value) => validateNotEmpty(value, "la colonia"),
-                                      decoration: const InputDecoration(
-                                        labelText: 'Colonia',
-                                      ),
-                                    ),
-                                    DropdownButtonFormField<String>(
-                                      value: _selectedCity,
-                                      items: const [
-                                        DropdownMenuItem(value: 'Suchiapa', child: Text('Suchiapa')),
-                                        DropdownMenuItem(value: 'Tuxtla', child: Text('Tuxtla')),
-                                      ],
-                                      onChanged: (String? newValue) {
-                                        setState(() {
-                                          _selectedCity = newValue;
-                                        });
-                                      },
-                                      validator: (value) => value == null ? 'Por favor seleccione una ciudad' : null,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Ciudad',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _referenceController,
-                                      validator: (value) => validateNotEmpty(value, "la referencia"),
-                                      decoration: const InputDecoration(
-                                        labelText: 'Referencia',
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _phoneNumberController,
-                                      validator: validatePhoneNumber,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Número telefónico',
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () => _selectTime(context, true),
-                                      child: AbsorbPointer(
-                                        child: TextFormField(
-                                          controller: TextEditingController(text: _openingTime.format(context)),
-                                          validator: (value) => validateNotEmpty(value, "la hora de apertura"),
-                                          decoration: const InputDecoration(
-                                            labelText: 'Hora de apertura',
-                                          ),
+                              child: Column(
+                                children: [
+                                  IndexedStack(
+                                    index: _currentStep,
+                                    children: [
+                                      _buildStep1(),
+                                      _buildStep2(),
+                                      _buildStep3(),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      if (_currentStep > 0)
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _currentStep--;
+                                              print('Paso actual: $_currentStep');
+                                            });
+                                          },
+                                          child: const Text('Anterior'),
                                         ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () => _selectTime(context, false),
-                                      child: AbsorbPointer(
-                                        child: TextFormField(
-                                          controller: TextEditingController(text: _closingTime.format(context)),
-                                          validator: (value) => validateNotEmpty(value, "la hora de cierre"),
-                                          decoration: const InputDecoration(
-                                            labelText: 'Hora de cierre',
-                                          ),
+                                      if (_currentStep < 2)
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            bool isValid = false;
+                                            switch (_currentStep) {
+                                              case 0:
+                                                isValid = _step1Key.currentState!.validate();
+                                                break;
+                                              case 1:
+                                                isValid = _step2Key.currentState!.validate();
+                                                break;
+                                              case 2:
+                                                isValid = true; // Step 3 doesn't need validation
+                                                break;
+                                            }
+                                            print('Resultado de la validación: $isValid');
+                                            if (isValid) {
+                                              setState(() {
+                                                _currentStep++;
+                                                print('Paso actual: $_currentStep');
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(content: Text('Por favor complete todos los campos')),
+                                              );
+                                            }
+                                          },
+                                          child: const Text('Siguiente'),
                                         ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    GestureDetector(
-                                      onTap: _pickImage,
-                                      child: Container(
-                                        color: Colors.grey[200],
-                                        width: double.infinity,
-                                        height: 150,
-                                        child: _image == null
-                                            ? const Icon(Icons.add_a_photo, size: 50, color: Colors.grey)
-                                            : Image.file(_image!, fit: BoxFit.cover),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 80, top: 30),
-                            child: ElevatedButton(
-                              onPressed: _createUser,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF88B04F),
-                                minimumSize: const Size(200, 50),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                              ),
-                              child: const Text(
-                                'Registrarse',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
-                                  fontFamily: 'FiraSansCondensed',
-                                ),
+                                      if (_currentStep == 2)
+                                        ElevatedButton(
+                                          onPressed: _createStore,
+                                          child: const Text('Registrarse'),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),

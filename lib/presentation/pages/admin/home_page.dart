@@ -7,13 +7,12 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/product_model.dart';
 import '../../../domain/use_cases/get_all_product_byStore_usecase.dart';
-import '../../../domain/use_cases/get_product_by_id_usecase.dart';
+
+import '../../../infraestructure/repositories/user_repository_impl.dart';
 import '../../components/dialog_create_product.dart';
-import '../../components/dialog_delete_product.dart';
 import '../../components/dialog_update_product.dart';
 import '../../components/product_card_page.dart';
 import '../../providers/user_provider.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,17 +20,21 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomeAdmiPageState();
 }
+
 class _HomeAdmiPageState extends State<HomePage> {
   late Future<List<ProductModel>> futureProducts;
   late ConnectivityStatus _connectivityStatus;
   late LocalProductRepository _localProductRepository;
+  String? storeId;
 
   @override
   void initState() {
     super.initState();
     _localProductRepository = LocalProductRepository();
-    getProducts();
+    futureProducts = Future.value([]);
+    getStoreIdAndProducts();
   }
+
   @override
   void dispose() {
     final connectivityService = Provider.of<ConnectivityService>(context, listen: false);
@@ -39,7 +42,30 @@ class _HomeAdmiPageState extends State<HomePage> {
     super.dispose();
   }
 
+  void getStoreIdAndProducts() async {
+    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    final email = Provider.of<UserProvider>(context, listen: false).user?.email;
+    final connectivityService = Provider.of<ConnectivityService>(context, listen: false);
+    _connectivityStatus = connectivityService.status;
+
+    try {
+      final userRepository = Provider.of<UserRepositoryImpl>(context, listen: false);
+      final user = await userRepository.getUserByEmail(token!, email!);
+      storeId = user['store_uuid'];
+
+      getProducts(); // Llama a getProducts una vez que storeId está disponible
+    } catch (error) {
+      print('Error al obtener el ID de la tienda: $error');
+    }
+
+    connectivityService.addListener(_updateConnectivityStatus);
+  }
+
   void getProducts() {
+    if (storeId == null) {
+      print('No store ID available');
+      return;
+    }
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     final connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     _connectivityStatus = connectivityService.status;
@@ -49,13 +75,10 @@ class _HomeAdmiPageState extends State<HomePage> {
         futureProducts = _localProductRepository.getAllProducts();
       } else {
         final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
-        //futureProducts = getAllProductsUseCase.execute(token!, );
+        futureProducts = getAllProductsUseCase.execute(token!, storeId!);
       }
     });
-
-    connectivityService.addListener(_updateConnectivityStatus);
   }
-
 
   void _updateConnectivityStatus() {
     print('Conectivity');
@@ -124,6 +147,7 @@ class _HomeAdmiPageState extends State<HomePage> {
       print('Error al obtener los datos del producto: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -270,21 +294,13 @@ class _HomeAdmiPageState extends State<HomePage> {
                         IconButton(
                           icon: SvgPicture.asset(
                             'assets/images/home.svg',
-                            width: 45,
-                            height: 45,
+                            width: 40,
+                            height: 40,
                           ),
                           onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()),
+                            );
                             // Navigate to home
-                          },
-                        ),
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/images/location.svg',
-                            width: 50,
-                            height: 50,
-                          ),
-                          onPressed: () {
-                            // Navigate to location
                           },
                         ),
                       ],

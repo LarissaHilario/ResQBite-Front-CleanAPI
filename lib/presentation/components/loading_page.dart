@@ -1,3 +1,4 @@
+import 'package:crud_r/presentation/pages/admin/tap_bar_admi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:crud_r/presentation/pages/admin/home_page.dart';
@@ -32,7 +33,7 @@ class _LoadingPageState extends State<LoadingPage> with TickerProviderStateMixin
       _controller.stop();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => const TapBarAdmi())
       );
     }
   }

@@ -17,12 +17,10 @@ class ApiProductRepository implements ProductRepository {
     print(response.statusCode);
     if (response.statusCode == 200) {
       final dynamic jsonResponse = json.decode(response.body);
-      if (jsonResponse.containsKey('saucers')) {
-        List<dynamic> saucersJson = jsonResponse['saucers'];
+
+        List<dynamic> saucersJson = jsonResponse;
         return saucersJson.map((saucer) => ProductModel.fromJson(saucer)).toList();
-      } else {
-        throw Exception('Response does not contain "saucers"');
-      }
+
     } else {
       throw Exception('Failed to load products');
     }
@@ -47,7 +45,7 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<void> deleteProduct(String token, int productId) async {
 
-    final url = 'http://3.223.7.73/delete-saucer/$productId';
+    final url = 'https://localhost:3000/api/v5/product/products/$productId';
     final response = await http.delete(Uri.parse(url), headers: {
       'Authorization': 'Bearer $token',
     });
@@ -62,13 +60,26 @@ class ApiProductRepository implements ProductRepository {
 
   @override
   Future<void> createProduct(
-      {required String name,
+      {/*required String name,
+        required String description,
+        required String price,
+        required String stock,
+        required String category,
+        required String creationDate,
+        required String formDescription,
+        required String expirationDate,
+        required String quality,
+        required String manipulation,
+        required File image,
+        required String storeId,
+        required String token*/
+        required String name,
         required String description,
         required String price,
         required String stock,
         required File image,
         required String token}) async {
-    const url = 'http://3.223.7.73/create-saucer/';
+    const url = '';
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers.addAll({'Authorization': 'Bearer $token'});
     request.fields.addAll({
@@ -120,7 +131,7 @@ class ApiProductRepository implements ProductRepository {
         required String stock,
         required File image,
         required String token}) async {
-    final url = 'http://3.223.7.73/update-saucer/$productId';
+    final url = 'https://resqbite-gateway.integrador.xyz:3000/api/v5/product/products/$productId';
     var request = http.MultipartRequest('PUT', Uri.parse(url));
     request.headers.addAll({'Authorization': 'Bearer $token'});
     request.fields.addAll({

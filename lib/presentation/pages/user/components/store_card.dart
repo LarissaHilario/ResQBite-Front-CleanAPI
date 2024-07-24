@@ -1,4 +1,3 @@
-// Asegúrate de tener la ruta correcta
 import 'package:crud_r/presentation/pages/user/about_store_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +5,7 @@ import '../../../providers/store/store_provider.dart';
 import '../../../providers/user_provider.dart';
 
 class CardStoreComponent extends StatefulWidget {
-  const CardStoreComponent({super.key});
+  const CardStoreComponent({Key? key}) : super(key: key);
 
   @override
   State<CardStoreComponent> createState() => _CardStoreComponentState();
@@ -27,7 +26,7 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(),
+        padding: const EdgeInsets.all(0),
         child: Column(
           children: [
             const Align(
@@ -90,15 +89,13 @@ class _CardStoreComponentState extends State<CardStoreComponent> {
                                         topLeft: Radius.circular(20),
                                         topRight: Radius.circular(20),
                                       ),
-                                    child:
-                                    Image(
+                                      child: Image(
                                         image: store.imageProvider,
                                         width: double.infinity,
                                         height: 70,
                                         fit: BoxFit.cover,
-
+                                      ),
                                     ),
-                                  ),
                                     Positioned(
                                       bottom: 30,
                                       left: 10,

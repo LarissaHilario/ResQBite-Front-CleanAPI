@@ -3,6 +3,9 @@ import 'package:crud_r/domain/repositories/store_repository.dart';
 import 'package:crud_r/infraestructure/repositories/store/store_repository_impl.dart';
 import 'package:flutter/material.dart';
 
+import '../../../domain/models/product_model.dart';
+import '../../../infraestructure/repositories/api_product_repository.dart';
+
 class StoreProvider extends ChangeNotifier {
   final StoreRepository _storeRepository = StoreRepositoryImpl();
 
@@ -29,5 +32,21 @@ class StoreProvider extends ChangeNotifier {
     _loading = false;
     notifyListeners();
     return _store;
+  }
+
+  List<ProductModel> products = [];
+
+  Future<void> getProductsByStore(String token, String storeId) async {
+    _loading = true;
+    notifyListeners();
+    try {
+      products = await ApiProductRepository().getAllProductsByStore(token, storeId);
+    } catch (error) {
+      products = [];
+      rethrow;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
 }

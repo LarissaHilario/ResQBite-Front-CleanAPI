@@ -17,40 +17,44 @@ class StoreUserPage extends StatefulWidget {
 }
 
 class _StoreUserPageState extends State<StoreUserPage> {
-  late Future<StoreModel> _storeFuture;
+  late Future<void> _storeFuture;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     if (token != null) {
-      _storeFuture = Provider.of<StoreProvider>(context, listen: false).getStoreById(token, widget.storeId);
+      _storeFuture = _fetchStoreDetails(token, widget.storeId);
     }
+  }
+
+  Future<void> _fetchStoreDetails(String token, String storeId) async {
+    await Provider.of<StoreProvider>(context, listen: false).getStoreById(token, storeId);
+    await Provider.of<StoreProvider>(context, listen: false).getProductsByStore(token, storeId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: FutureBuilder<StoreModel>(
+        child: FutureBuilder<void>(
           future: _storeFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return const Center(
-                  child: Text('Error al cargar los detalles de la tienda'));
-            } else if (snapshot.hasData) {
-              final store = snapshot.data!;
-              final offerProducts = store.saucers.take(5).toList();
-              final otherProducts = store.saucers.skip(5).take(10).toList();
+              return const Center(child: Text('Error al cargar los detalles de la tienda'));
+            } else {
+              final store = Provider.of<StoreProvider>(context).store;
+              final products = Provider.of<StoreProvider>(context).products;
+              final offerProducts = products.take(5).toList();
+              final otherProducts = products.skip(5).toList();
 
               return Column(
                 children: [
                   Container(
                     height: 205,
-                    child: Image(
-                        image: store.imageProvider, width: double.infinity),
+                    child: Image(image: store.imageProvider, width: double.infinity),
                   ),
                   Align(
                     alignment: Alignment.topLeft,
@@ -105,8 +109,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 2, left: 5),
+                                      padding: const EdgeInsets.only(top: 2, left: 5),
                                       child: SvgPicture.asset(
                                         'assets/images/clock.svg',
                                         width: 18,
@@ -115,7 +118,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                   ),
                                   Text(
                                     ' ${store.openingTime} hrs - ${store.closingTime} hrs',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14.0,
                                       color: Color(0xFF464646),
                                       fontWeight: FontWeight.w500,
@@ -128,8 +131,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                               Align(
                                 alignment: Alignment.topLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 1, left: 40),
+                                  padding: const EdgeInsets.only(top: 1, left: 40),
                                   child: SvgPicture.asset(
                                     'assets/images/phone.svg',
                                     width: 18,
@@ -155,8 +157,7 @@ class _StoreUserPageState extends State<StoreUserPage> {
                   Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10, right: 10, top: 20),
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
                       child: Container(
                         height: 230,
                         decoration: BoxDecoration(
@@ -193,7 +194,6 @@ class _StoreUserPageState extends State<StoreUserPage> {
                                       padding: const EdgeInsets.all(10.0),
                                       child: CardOfferComponent(product: product),
                                     );
-
                                   },
                                 ),
                               ),
@@ -222,11 +222,11 @@ class _StoreUserPageState extends State<StoreUserPage> {
                   ListView.builder(
                     itemCount: otherProducts.length,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       final product = otherProducts[index];
                       return Padding(
-                        padding: EdgeInsets.all(2.0),
+                        padding: const EdgeInsets.all(2.0),
                         child: SearchCard(
                           tienda: store.name,
                           producto: product.name,
@@ -240,9 +240,6 @@ class _StoreUserPageState extends State<StoreUserPage> {
                   ),
                 ],
               );
-            } else {
-              return const Center(
-                  child: Text('No se encontraron detalles de la tienda'));
             }
           },
         ),

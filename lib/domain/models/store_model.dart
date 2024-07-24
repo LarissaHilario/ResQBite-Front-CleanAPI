@@ -39,16 +39,18 @@ class StoreModel {
   }
 
   Map<String, dynamic> toJson() => {
-    'closingTime': closingTime,
-    'openingTime': openingTime,
-    'address': neighborhood,
-    'id': id,
-    'image': image,
-    'location': city,
+    'rfc': rfc,
+    'street': street,
+     'number': number,
+    'neighborhood': neighborhood,
+    'city': city,
+    'reference': reference,
+    'url_image': image,
+    'phone_number': phone,'opening_hours': openingTime,
+    'closing_hours': closingTime,
     'name': name,
-    'phone': phone,
-    'number': number,
-    'saucers': saucers.map((saucer) => saucer.toJson()).toList(),
+
+
   };
 
   factory StoreModel.fromJson(Map<String, dynamic> json) {
