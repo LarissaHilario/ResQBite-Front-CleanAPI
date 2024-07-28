@@ -65,7 +65,9 @@ void main() async {
             LocalProductRepository(),
             context,
           ),
+
         ),
+
 
         ProxyProvider<ProductRepositoryImpl, GetAllProductsByStoreUseCase>(
           update: (_, productRepository, __) => GetAllProductsByStoreUseCase(productRepository),
@@ -82,8 +84,8 @@ void main() async {
         ProxyProvider<ProductRepositoryImpl, DeleteProductUseCase>(
           update: (_, productRepository, __) => DeleteProductUseCase(productRepository),
         ),
-        ProxyProvider<ProductRepositoryImpl, CreateProductUseCase>(
-          update: (_, productRepository, __) => CreateProductUseCase(productRepository),
+        ProxyProvider<ApiProductRepository, CreateProductUseCase>(
+          update: (_, apiProductRepository, __) => CreateProductUseCase(apiProductRepository),
         ),
       ],
       child: MyApp(),

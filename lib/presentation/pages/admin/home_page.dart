@@ -71,12 +71,10 @@ class _HomeAdmiPageState extends State<HomePage> {
     _connectivityStatus = connectivityService.status;
 
     setState(() {
-      if (_connectivityStatus == ConnectivityStatus.Offline) {
-        futureProducts = _localProductRepository.getAllProducts();
-      } else {
+
         final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
         futureProducts = getAllProductsUseCase.execute(token!, storeId!);
-      }
+
     });
   }
 
@@ -265,50 +263,7 @@ class _HomeAdmiPageState extends State<HomePage> {
                 }
               },
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 560),
-                child: Container(
-                  height: 90,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFDDE4D9),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 50, right: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/images/user1.svg',
-                            width: 40,
-                            height: 40,
-                          ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => UserPage()),
-                            );
-                            // Navigate to user profile
-                          },
-                        ),
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/images/home.svg',
-                            width: 40,
-                            height: 40,
-                          ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()),
-                            );
-                            // Navigate to home
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),

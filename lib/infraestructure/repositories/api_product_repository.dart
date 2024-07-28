@@ -10,9 +10,6 @@ class ApiProductRepository implements ProductRepository {
   Future<List<ProductModel>> getAllProductsByStore(String token, String storeId) async {
     final response = await http.get(
       Uri.parse('https://resqbite-gateway.integrador.xyz:3000/api/v5/product/products/store/$storeId'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
     );
     print(response.statusCode);
     if (response.statusCode == 200) {
@@ -60,7 +57,7 @@ class ApiProductRepository implements ProductRepository {
 
   @override
   Future<void> createProduct(
-      {/*required String name,
+      {required String name,
         required String description,
         required String price,
         required String stock,
@@ -72,22 +69,23 @@ class ApiProductRepository implements ProductRepository {
         required String manipulation,
         required File image,
         required String storeId,
-        required String token*/
-        required String name,
-        required String description,
-        required String price,
-        required String stock,
-        required File image,
-        required String token}) async {
-    const url = '';
+        required String token
+        }) async {
+    const url = 'https://resqbite-gateway.integrador.xyz:3000/api/v5/product/create-products';
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers.addAll({'Authorization': 'Bearer $token'});
     request.fields.addAll({
       'name': name,
-      'description': description,
-      'price': price,
-      'stock': stock,
-      'category': 'comida',
+      'precio': price,
+      'quantity': stock,
+      'sales_description': description,
+      'category': category,
+      'form[description]': formDescription,
+      'form[creation_date]': creationDate,
+      'form[approximate_expiration_date]': expirationDate,
+      'form[quality]': quality,
+      'form[manipulation]': manipulation,
+      'uuid_Store': storeId,
     });
     request.files.add(await http.MultipartFile.fromPath('image', image.path));
     final response = await request.send();
@@ -99,7 +97,7 @@ class ApiProductRepository implements ProductRepository {
 
         final redirectResponse = await http.get(Uri.parse(redirectUrl));
         print(redirectResponse.statusCode);
-        if (redirectResponse.statusCode == 200) {
+        if (redirectResponse.statusCode == 201) {
 
           if (kDebugMode) {
             print('Producto creado exitosamente');
@@ -111,7 +109,8 @@ class ApiProductRepository implements ProductRepository {
       } else {
         throw Exception('No se proporcionó una URL de redirección');
       }
-    } else if (response.statusCode == 200) {
+    }
+    else if (response.statusCode == 201) {
 
       if (kDebugMode) {
         print('Producto creado exitosamente');

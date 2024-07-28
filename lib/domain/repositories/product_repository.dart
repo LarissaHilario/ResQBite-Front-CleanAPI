@@ -12,7 +12,15 @@ abstract class ProductRepository {
     required String description,
     required String price,
     required String stock,
-    required File image, required String token,
+    required String category,
+    required String creationDate,
+    required String formDescription,
+    required String expirationDate,
+    required String quality,
+    required String manipulation,
+    required File image,
+    required String storeId,
+    required String token
   });
   Future<void> updateProduct({
     required int productId,

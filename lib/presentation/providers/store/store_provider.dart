@@ -8,6 +8,7 @@ import '../../../infraestructure/repositories/api_product_repository.dart';
 
 class StoreProvider extends ChangeNotifier {
   final StoreRepository _storeRepository = StoreRepositoryImpl();
+  String? _storeId;
 
   List<StoreModel> _stores = [];
   List<StoreModel> get stores => _stores;
@@ -30,6 +31,7 @@ class StoreProvider extends ChangeNotifier {
     _loading = true;
     _store = await _storeRepository.getStoreById(token, storeId);
     _loading = false;
+
     notifyListeners();
     return _store;
   }

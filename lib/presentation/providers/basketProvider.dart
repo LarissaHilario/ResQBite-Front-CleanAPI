@@ -18,6 +18,7 @@ class BasketProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
   void updateItemQuantity(int index, int quantity) {
     if (index >= 0 && index < _items.length) {
       _items[index]['quantity'] = quantity;
@@ -26,11 +27,14 @@ class BasketProvider with ChangeNotifier {
   }
 
   void removeItem(int index) {
-    _items.removeAt(index);
-    notifyListeners();
+    if (index >= 0 && index < _items.length) {
+      _items.removeAt(index);
+      notifyListeners();
+    }
   }
+
   void removeItemById(int productId) {
-    basketItems.removeWhere((item) => item['product'].id == productId);
+    _items.removeWhere((item) => item['product'].id == productId);
     notifyListeners();
   }
 
@@ -46,8 +50,12 @@ class BasketProvider with ChangeNotifier {
     if (index >= 0 && index < _items.length) {
       final currentQuantity = _items[index]['quantity'];
       if (currentQuantity > 0) {
-        _items[index]['quantity'] = currentQuantity - 1;
-        notifyListeners();
+        if (currentQuantity - 1 == 0) {
+          removeItem(index);
+        } else {
+          _items[index]['quantity'] = currentQuantity - 1;
+          notifyListeners();
+        }
       }
     }
   }
