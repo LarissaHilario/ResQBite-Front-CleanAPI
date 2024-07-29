@@ -43,7 +43,46 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
     });
   }
 
-  Future<void> _createProduct() async {
+  void _showErrorSnackbar(String message) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).viewInsets.bottom + 50, // Ajusta según tu necesidad
+        left: 0,
+        right: 0,
+        child: Material(
+          color: Colors.transparent,
+          child: SizedBox(
+            height: 50,
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Center(
+                  child: Text(
+                    message,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+
+
+  void _createProduct() async {
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     if (_imageFile == null) {
       print('Error: No se ha seleccionado ninguna imagen.');
@@ -81,9 +120,12 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
       closeAlert();
       print('El producto se creó correctamente');
     } catch (e) {
+      _showErrorSnackbar(e.toString());
       print('Error al crear el producto: $e');
     }
   }
+
+
 
   List<Step> _buildSteps() {
     return [
@@ -261,7 +303,7 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
             TextField(
               controller: _formDescriptionController,
               decoration: InputDecoration(
-                labelText: 'Descripción del Formulario',
+                labelText: 'Descripción del Formato',
                 enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFF88B04F))),
                 contentPadding: EdgeInsets.symmetric(
@@ -270,7 +312,7 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
-                hintText: 'Descripción del formulario',
+                hintText: 'Descripción del formato',
                 hintStyle: const TextStyle(
                   color: Color(0xFFAAAAAF),
                   fontSize: 16,
@@ -278,19 +320,11 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
                 ),
               ),
             ),
-          ],
-        ),
-        isActive: _currentStep >= 1,
-        state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
-      ),
-      Step(
-        title: Text('Paso 3'),
-        content: Column(
-          children: [
+            const SizedBox(height: 15),
             TextField(
               controller: _qualityController,
               decoration: InputDecoration(
-                labelText: 'Calidad del Producto',
+                labelText: 'Calidad',
                 enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFF88B04F))),
                 contentPadding: EdgeInsets.symmetric(
@@ -299,7 +333,7 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
-                hintText: 'Calidad del producto',
+                hintText: 'Calidad',
                 hintStyle: const TextStyle(
                   color: Color(0xFFAAAAAF),
                   fontSize: 16,
@@ -307,7 +341,7 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
                 ),
               ),
             ),
-            const SizedBox(height: 1),
+            const SizedBox(height: 15),
             TextField(
               controller: _manipulationController,
               decoration: InputDecoration(
@@ -328,21 +362,22 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
                 ),
               ),
             ),
-            const SizedBox(height: 1),
-            _imageFile != null
-                ? Image.file(_imageFile!, width: 10, height: 10,)
-                : Text('No se ha seleccionado ninguna imagen'),
-            ElevatedButton(
-              onPressed: _getImage,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF88B04F),
+            const SizedBox(height: 15),
+            GestureDetector(
+              onTap: _getImage,
+              child: Container(
+                color: Colors.grey[300],
+                height: 150,
+                width: double.infinity,
+                child: _imageFile == null
+                    ? Center(child: Text('Seleccionar Imagen'))
+                    : Image.file(_imageFile!, fit: BoxFit.cover),
               ),
-              child: const Text('Seleccionar Imagen'),
             ),
           ],
         ),
-        isActive: _currentStep >= 2,
-        state: _currentStep >= 2 ? StepState.complete : StepState.disabled,
+        isActive: _currentStep >= 1,
+        state: _currentStep >= 1 ? StepState.complete : StepState.disabled,
       ),
     ];
   }
@@ -350,73 +385,30 @@ class _MyDialogAddProductState extends State<MyDialogAddProduct> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-      backgroundColor: const Color(0xFFFBFCF7),
-      title: const Text(
-        'Agregar Producto',
-        style: TextStyle(color: Color(0xFF88B04F)),
-      ),
-
-      content: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-    child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stepper(
-              currentStep: _currentStep,
-              onStepTapped: (step) => setState(() => _currentStep = step),
-    onStepContinue: () {
-    print('Current step: $_currentStep');
-    if (_currentStep < _buildSteps().length - 1) {
-    setState(() => _currentStep += 1);
-    print('Moving to next step: $_currentStep');
-    } else {
-    print('Ejecutando _createProduct');
-    _createProduct();
-    }
-    },
-              onStepCancel: () {
-                if (_currentStep > 0) {
-                  setState(() => _currentStep -= 1);
-                }
-              },
-              steps: _buildSteps(),
-              controlsBuilder: (BuildContext context, ControlsDetails details) {
-                return Row(
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: details.onStepContinue,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF88B04F),
-                      ),
-                      child: const Text('Continuar'),
-                    ),
-                    const SizedBox(width: 10),
-                    TextButton(
-                      onPressed: details.onStepCancel,
-                      style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF88B04F),
-                      ),
-                      child: const Text('Atrás'),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+      title: Text('Agregar Producto'),
+      content: SizedBox(
+        height: 600,
+        child: Stepper(
+          currentStep: _currentStep,
+          onStepContinue: () {
+            if (_currentStep < _buildSteps().length - 1) {
+              setState(() {
+                _currentStep += 1;
+              });
+            } else {
+              _createProduct();
+            }
+          },
+          onStepCancel: () {
+            if (_currentStep > 0) {
+              setState(() {
+                _currentStep -= 1;
+              });
+            }
+          },
+          steps: _buildSteps(),
         ),
       ),
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: closeAlert,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF88B04F),
-          ),
-          child: const Text('Cerrar'),
-        ),
-      ],
     );
   }
 }
