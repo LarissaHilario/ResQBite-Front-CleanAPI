@@ -6,14 +6,18 @@ class SearchBarComponent extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onChanged;
   final Widget? leading;
+  final TextEditingController? textController;
+  final String hintText;
 
   const SearchBarComponent({
-    Key? key,
+    super.key,
     this.padding,
     this.onTap,
     this.onChanged,
     this.leading,
-  }) : super(key: key);
+    this.textController,
+    required this.hintText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +26,11 @@ class SearchBarComponent extends StatelessWidget {
       height: 52.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
-        color:
-        const Color(0xFF88B04F).withOpacity(0.20),
+
+
         border: Border.all(
           color: const Color(0xFF88B04F).withOpacity(0.5),
-          width: 3.0,
+          width: 1.0,
         ),
       ),
       child: Container(
@@ -34,6 +38,7 @@ class SearchBarComponent extends StatelessWidget {
         child: TextField(
           onTap: onTap,
           onChanged: onChanged,
+          controller: textController,
           style: TextStyle(
               color: Colors.black.withOpacity(.5),
               fontWeight: FontWeight.w300,
@@ -41,13 +46,10 @@ class SearchBarComponent extends StatelessWidget {
               fontSize: 16
           ),
           decoration: InputDecoration(
-            hintText: 'Buscar tu categoría ...',
+            hintText: hintText,
             hintStyle:
             const TextStyle(color: Colors.grey),
             prefixIcon: leading,
-            suffixIcon: SvgPicture.asset(
-              'assets/images/arrow-right.svg',
-            ),
             contentPadding: const EdgeInsets.symmetric(
                 vertical: 10.0,
                 horizontal: 10.0),

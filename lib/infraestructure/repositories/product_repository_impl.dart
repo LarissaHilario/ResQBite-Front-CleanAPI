@@ -22,13 +22,11 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
       );
 
   @override
-  Future<List<ProductModel>> getAllProducts(String token) async {
+  Future<List<ProductModel>> getAllProductsByStore(String token, String storeId) async {
     var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     if (connectivityService.status == ConnectivityStatus.connected) {
       print('tengo internet');
-      await _localProductRepository.processPendingOperations(_apiProductRepository, token);
-      final products = await _apiProductRepository.getAllProducts(token);
-      await _localProductRepository.saveProductsLocally(products);
+      final products = await _apiProductRepository.getAllProductsByStore(token, storeId);
       return products;
     } else {
       print('No tengo internet');
@@ -39,13 +37,8 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
 
   @override
   Future<ProductModel> getProductById(int productId, String token) async {
-    var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      await _localProductRepository.processPendingOperations(_apiProductRepository, token);
-      return _apiProductRepository.getProductById(productId, token);
-    } else {
-      return _localProductRepository.getProductById(productId, token);
-    }
+    return _apiProductRepository.getProductById(productId, token);
+
   }
 
   @override
@@ -63,42 +56,7 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
     }
   }
 
-  @override
-  Future<void> createProduct({
-    required String name,
-    required String description,
-    required String price,
-    required String stock,
-    required File image,
-    required String token,
-  }) async {
-    var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
-    if (connectivityService.status == ConnectivityStatus.connected) {
-      print('tengo internet');
-      await _localProductRepository.processPendingOperations(_apiProductRepository, token);
-      await _apiProductRepository.createProduct(
-        name: name,
-        description: description,
-        price: price,
-        stock: stock,
-        image: image,
-        token: token,
-      );
-    } else {
-      print('no tengo internet');
-      final operation = {
-        'action': 'create',
-        'name': name,
-        'description': description,
-        'price': price,
-        'stock': stock,
-        'image': image.path,
-        'token': token,
-        'category': 'comida'
-      };
-      await _localProductRepository.savePendingOperation(operation);
-    }
-  }
+  
 
   @override
   Future<void> updateProduct({
@@ -135,5 +93,26 @@ class ProductRepositoryImpl extends ChangeNotifier implements ProductRepository 
       };
       await _localProductRepository.savePendingOperation(operation);
     }
+  }
+
+  @override
+  Future<List<ProductModel>> getAllProducts(String token) async {
+    var connectivityService = Provider.of<ConnectivityService>(context, listen: false);
+    if (connectivityService.status == ConnectivityStatus.connected) {
+      print('tengo internet');
+      final products = await _apiProductRepository.getAllProducts(token);
+      await _localProductRepository.saveProductsLocally(products);
+      return products;
+    } else {
+      print('No tengo internet');
+      final localProducts = await _localProductRepository.getAllProducts();
+      return localProducts;
+    }
+  }
+
+  @override
+  Future<void> createProduct({required String name, required String description, required String price, required String stock, required String category, required String creationDate, required String formDescription, required String expirationDate, required String quality, required String manipulation, required File image, required String storeId, required String token}) {
+    // TODO: implement createProduct
+    throw UnimplementedError();
   }
 }

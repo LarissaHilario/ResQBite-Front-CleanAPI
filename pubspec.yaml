@@ -40,13 +40,18 @@ dependencies:
   image_picker: ^0.8.0+6
   provider: ^6.1.2
   connectivity_plus: ^6.0.3
-
+  photo_manager: ^2.6.0
+  google_maps_flutter: ^2.7.0
+  flutter_dotenv: ^5.1.0
+  flutter_secure_storage: ^9.2.2
+  flutter_stripe: ^10.1.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
 
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
 
@@ -56,6 +61,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo-resqbite.png"
+  min_sdk_android: 21
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -98,6 +110,36 @@ flutter:
     - assets/images/location-image.svg
     - assets/images/Frame.png
     - assets/images/user1.svg
+    - assets/images/register.png
+    - assets/images/open-eye.png
+    - assets/images/open.svg
+    - assets/images/eye.svg
+    - assets/images/bag.svg
+    - assets/images/searchImg.png
+    - assets/images/photo_store.png
+    - assets/images/clock.svg
+    - assets/images/location_icon.svg
+    - assets/images/phone.svg
+    - assets/images/cuerno.png
+    - assets/images/cesta.svg
+    - assets/images/close.svg
+    - assets/images/ubication-store.svg
+    - assets/images/minus.svg
+    - assets/images/more.svg
+    - assets/images/logo-hd.png
+    - assets/images/suchiapa.png
+    - assets/images/tuxtla.png
+    - assets/images/date.svg
+    - assets/images/cesta-white.svg
+    - assets/images/cesta-black.svg
+    - assets/images/delete-rojo.svg
+    - assets/images/loading.png
+    - assets/images/loading.svg
+    - assets/images/load.svg
+    - assets/images/register-img.svg
+    - assets/images/changeuser.svg
+    - assets/images/add_prod.svg
+    - .env
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
     # the material Icons class.

@@ -1,17 +1,17 @@
-import 'package:crud_r/presentation/pages/home_page.dart';
+import 'package:crud_r/presentation/pages/admin/home_page.dart';
 import 'package:crud_r/presentation/providers/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/models/product_model.dart';
-import '../../domain/use_cases/get_all_product_usecase.dart';
-import '../../domain/use_cases/get_product_by_id_usecase.dart';
-import '../components/dialog_create_product.dart';
-import '../components/dialog_delete_product.dart';
-import '../components/dialog_update_product.dart';
-import '../components/product_card_page.dart';
-import '../providers/user_provider.dart';
+import '../../../domain/models/product_model.dart';
+import '../../../domain/use_cases/get_all_product_byStore_usecase.dart';
+import '../../../domain/use_cases/get_product_by_id_usecase.dart';
+import '../../components/dialog_create_product.dart';
+import '../../components/dialog_delete_product.dart';
+import '../../components/dialog_update_product.dart';
+import '../../components/product_card_page.dart';
+import '../../providers/user_provider.dart';
 
 
 class UserPage extends StatefulWidget {
@@ -27,8 +27,8 @@ class _UserPageState extends State<UserPage> {
     super.initState();
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     if (token != null) {
-      final getAllProductsUseCase = Provider.of<GetAllProductsUseCase>(context, listen: false);
-      futureProducts = getAllProductsUseCase.execute(token);
+      final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
+      //futureProducts = getAllProductsUseCase.execute(token);
     } else {
       futureProducts = Future.error('User is not authenticated');
     }

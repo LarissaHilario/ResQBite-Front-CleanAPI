@@ -18,21 +18,7 @@ class LocalProductRepository {
         final operation = json.decode(operationJson);
         final action = operation['action'];
         print(operation);
-        if (action == 'create') {
-          final name = operation['name'];
-          final description = operation['description'];
-          final price = operation['price'];
-          final stock = operation['stock'];
-          final image = File(operation['image']);
-          await apiProductRepository.createProduct(
-            name: name,
-            description: description,
-            price: price,
-            stock: stock,
-            image: image,
-            token: token,
-          );
-        } else if (action == 'update') {
+       if (action == 'update') {
           final productId = operation['productId'];
           final name = operation['name'];
           final description = operation['description'];

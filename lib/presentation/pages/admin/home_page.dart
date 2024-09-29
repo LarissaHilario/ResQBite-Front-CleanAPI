@@ -1,35 +1,40 @@
 import 'package:crud_r/infraestructure/repositories/local_product_repository.dart';
-import 'package:crud_r/presentation/pages/user_page.dart';
+import 'package:crud_r/presentation/pages/admin/user_page.dart';
 import 'package:crud_r/presentation/providers/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../domain/models/product_model.dart';
-import '../../domain/use_cases/get_all_product_usecase.dart';
-import '../../domain/use_cases/get_product_by_id_usecase.dart';
-import '../components/dialog_create_product.dart';
-import '../components/dialog_delete_product.dart';
-import '../components/dialog_update_product.dart';
-import '../components/product_card_page.dart';
-import '../providers/user_provider.dart';
+import '../../../domain/models/product_model.dart';
+import '../../../domain/use_cases/get_all_product_byStore_usecase.dart';
 
+import '../../../infraestructure/repositories/user_repository_impl.dart';
+import '../../components/dialog_create_product.dart';
+import '../../components/dialog_update_product.dart';
+import '../../components/product_card_page.dart';
+import '../../providers/user_provider.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomeAdmiPageState();
 }
+
 class _HomeAdmiPageState extends State<HomePage> {
   late Future<List<ProductModel>> futureProducts;
   late ConnectivityStatus _connectivityStatus;
   late LocalProductRepository _localProductRepository;
+  String? storeId;
 
   @override
   void initState() {
     super.initState();
     _localProductRepository = LocalProductRepository();
-    getProducts();
+    futureProducts = Future.value([]);
+    getStoreIdAndProducts();
   }
+
   @override
   void dispose() {
     final connectivityService = Provider.of<ConnectivityService>(context, listen: false);
@@ -37,23 +42,41 @@ class _HomeAdmiPageState extends State<HomePage> {
     super.dispose();
   }
 
+  void getStoreIdAndProducts() async {
+    final token = Provider.of<UserProvider>(context, listen: false).user?.token;
+    final email = Provider.of<UserProvider>(context, listen: false).user?.email;
+    final connectivityService = Provider.of<ConnectivityService>(context, listen: false);
+    _connectivityStatus = connectivityService.status;
+
+    try {
+      final userRepository = Provider.of<UserRepositoryImpl>(context, listen: false);
+      final user = await userRepository.getUserByEmail(token!, email!);
+      storeId = user['store_uuid'];
+
+      getProducts(); // Llama a getProducts una vez que storeId está disponible
+    } catch (error) {
+      print('Error al obtener el ID de la tienda: $error');
+    }
+
+    connectivityService.addListener(_updateConnectivityStatus);
+  }
+
   void getProducts() {
+    if (storeId == null) {
+      print('No store ID available');
+      return;
+    }
     final token = Provider.of<UserProvider>(context, listen: false).user?.token;
     final connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     _connectivityStatus = connectivityService.status;
 
     setState(() {
-      if (_connectivityStatus == ConnectivityStatus.Offline) {
-        futureProducts = _localProductRepository.getAllProducts();
-      } else {
-        final getAllProductsUseCase = Provider.of<GetAllProductsUseCase>(context, listen: false);
-        futureProducts = getAllProductsUseCase.execute(token!);
-      }
+
+        final getAllProductsUseCase = Provider.of<GetAllProductsByStoreUseCase>(context, listen: false);
+        futureProducts = getAllProductsUseCase.execute(token!, storeId!);
+
     });
-
-    connectivityService.addListener(_updateConnectivityStatus);
   }
-
 
   void _updateConnectivityStatus() {
     print('Conectivity');
@@ -122,6 +145,7 @@ class _HomeAdmiPageState extends State<HomePage> {
       print('Error al obtener los datos del producto: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,58 +263,7 @@ class _HomeAdmiPageState extends State<HomePage> {
                 }
               },
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 560),
-                child: Container(
-                  height: 90,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFDDE4D9),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 50, right: 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/images/user1.svg',
-                            width: 40,
-                            height: 40,
-                          ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => UserPage()),
-                            );
-                            // Navigate to user profile
-                          },
-                        ),
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/images/home.svg',
-                            width: 45,
-                            height: 45,
-                          ),
-                          onPressed: () {
-                            // Navigate to home
-                          },
-                        ),
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/images/location.svg',
-                            width: 50,
-                            height: 50,
-                          ),
-                          onPressed: () {
-                            // Navigate to location
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+
           ],
         ),
       ),
